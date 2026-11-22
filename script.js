@@ -1,5 +1,10 @@
-/* script.js v7 */
+/* script.js v8 */
 var EMAIL="rumongehalisiassociation@outlook.com",WHATSAPP="",FACEBOOK="",INSTAGRAM="",TIKTOK="",YOUTUBE="",TELEPHONE="";
+/* Optionnel : lien Formspree (https://formspree.io/f/xxxxxxxx) pour envoyer le formulaire sans ouvrir la messagerie */
+var FORMSPREE="";
+/* Moyens de don affichés sur la page Don. Exemple :
+   var DONS=[{t:"Virement bancaire",d:"Banque … – Compte n° … – Intitulé : Association de Rumonge Halisi"},{t:"Mobile money",d:"Lumicash : +257 …"}]; */
+var DONS=[];
 (function(){
 /* ===== LOGOS (SVG intégrés, couleurs d'origine) ===== */
 var TT='M16.6 5.8c-.7-.8-1.1-1.8-1.1-2.8h-2.9v12.3c0 1.4-1.1 2.5-2.5 2.5s-2.5-1.1-2.5-2.5 1.1-2.5 2.5-2.5c.3 0 .5 0 .8.1V9.9c-.3 0-.5-.1-.8-.1-3 0-5.4 2.4-5.4 5.4s2.4 5.4 5.4 5.4 5.4-2.4 5.4-5.4V9.2c1.1.8 2.4 1.3 3.8 1.3V7.6c-1.2 0-2.4-.7-3.2-1.8z';
@@ -57,44 +62,4 @@ if(ft){
   addr=fg.children[0].querySelector('p');
   if(addr)addrFR=addr.innerHTML;
  }
- ft.querySelectorAll('h2,h3,h4,h5').forEach(function(h){
-  var t=h.textContent.trim(),col=h.parentNode;
-  if(!col||col===ft||col===fg)return;
-  if(/^(Liens rapides|Quick links)$/.test(t))col.classList.add('ql');
-  if(/^(Suivez-nous|Follow us)$/.test(t))col.parentNode.removeChild(col);
- });
- var blk=document.createElement('div');blk.id='soc-block';blk.className='fs';
- blk.innerHTML='<h4 data-en="Follow us">Suivez-nous</h4>';
- blk.appendChild(social('#fff'));
- if(fg)fg.appendChild(blk);
- else{var cp=ft.querySelector('.copy');if(cp&&cp.parentNode)cp.parentNode.insertBefore(blk,cp);else ft.appendChild(blk)}
-}
-
-/* ===== LANGUE FR / EN (via les attributs data-en du HTML) ===== */
-var en=false;try{en=localStorage.getItem('lang')==='en'}catch(x){}
-var els=document.querySelectorAll('[data-en]'),b=document.getElementById('lang'),nav=document.getElementById('nav');
-els.forEach(function(e){e.setAttribute('data-fr',e.textContent)});
-function ap(){
- els.forEach(function(e){e.textContent=e.getAttribute(en?'data-en':'data-fr')});
- if(addr)addr.innerHTML=en?ADDR_EN:addrFR;
- document.documentElement.lang=en?'en':'fr';
- if(b)b.textContent=en?'FR':'EN';
-}
-if(b)b.onclick=function(){en=!en;try{localStorage.setItem('lang',en?'en':'fr')}catch(x){}ap()};
-if(en)ap();
-
-/* ===== MENU MOBILE ===== */
-var mn=document.getElementById('menu');
-if(mn&&nav)mn.onclick=function(){nav.classList.toggle('open')};
-
-/* ===== PAGE CONTACT : email + réseaux sous "Siège social" ===== */
-if(document.getElementById('send')||/contact/.test(location.pathname)){
- var tgt=null;
- document.querySelectorAll('p,div,li').forEach(function(e){
-  if(!tgt&&e.children.length===0&&/^\s*(Siège social|Head office)/.test(e.textContent))tgt=e;
- });
- var box=document.createElement('div');box.className='contact-coords';
- var lines=[];
- if(EMAIL)lines.push('✉️ <a href="mailto:'+EMAIL+'">'+EMAIL+'</a>');
- if(TELEPHONE)lines.push('📞 '+TELEPHONE);
- if(lines.length){var p=document.createElement('p');p.innerHTML=lines.join('
+ ft.querySelectorAll('h2,h3
