@@ -16,37 +16,52 @@ if(en)ap();
 var mn=document.getElementById('menu');
 if(mn&&nav)mn.onclick=function(){nav.classList.toggle('open')};
 
-/* ===== COORDONNEES ===== */
+/* ===== COORDONNEES ET RESEAUX SOCIAUX ===== */
 var c=[];
 if(EMAIL)c.push('✉️ <a href="mailto:'+EMAIL+'">'+EMAIL+'</a>');
 if(TELEPHONE)c.push('📞 '+TELEPHONE);
-if(WHATSAPP)c.push('💬 <a href="https://wa.me/'+WHATSAPP+'">WhatsApp</a>');
-var so=[];
-[['Facebook',FACEBOOK],['Instagram',INSTAGRAM],['TikTok',TIKTOK],['YouTube',YOUTUBE]].forEach(function(x){if(x[1])so.push('🔗 <a href="'+x[1]+'">'+x[0]+'</a>')});
+
+var nets=[['Facebook',FACEBOOK],['Instagram',INSTAGRAM],['TikTok',TIKTOK],['YouTube',YOUTUBE],['WhatsApp',WHATSAPP?'https://wa.me/'+WHATSAPP:'']];
+function pills(){
+ return '<div class="soc">'+nets.map(function(n){
+  return n[1]
+   ?'<a href="'+n[1]+'" target="_blank" rel="noopener">'+n[0]+'</a>'
+   :'<span title="Bientôt / Soon">'+n[0]+'</span>';
+ }).join('')+'</div>';
+}
 
 /* barre verte du haut : on retire la zone des coordonnées */
 document.querySelectorAll('.top .coords').forEach(function(e){e.parentNode.removeChild(e)});
 
-/* ===== PIED DE PAGE : sans "Liens rapides", "Suivez-nous" seulement si réseaux ===== */
+/* ===== PIED DE PAGE : sans "Liens rapides", avec la zone réseaux sociaux ===== */
 document.querySelectorAll('footer h4[data-en="Quick links"]').forEach(function(h){h.parentNode.parentNode.removeChild(h.parentNode)});
 document.querySelectorAll('footer h4[data-en="Follow us"]').forEach(function(h){
- var col=h.parentNode;
- if(so.length){var z=col.querySelector('.coords');if(z)z.innerHTML=so.join('<br>')}
- else col.parentNode.removeChild(col);
+ var z=h.parentNode.querySelector('.coords');
+ if(z)z.innerHTML=pills();
 });
 
 /* ===== STYLE ===== */
 var st=document.createElement('style');
-st.textContent='footer .fg{display:flex!important;justify-content:center;align-items:flex-start;gap:60px;text-align:center}footer .fg img{margin:0 auto 10px}.contact-coords{margin:14px 0}.contact-coords a{color:inherit!important;font-weight:600;text-decoration:underline}';
+st.textContent=
+ 'footer .fg{display:flex!important;justify-content:center;align-items:flex-start;gap:60px;flex-wrap:wrap;text-align:center}'+
+ 'footer .fg img{margin:0 auto 10px}'+
+ '.soc{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:8px}'+
+ '.soc a,.soc span{display:inline-block;padding:8px 18px;border:1px solid currentColor;border-radius:999px;font-size:.9rem;font-weight:600;text-decoration:none;color:inherit!important;line-height:1.2}'+
+ '.soc a:hover{opacity:.7}'+
+ '.soc span{opacity:.4;cursor:default}'+
+ '.contact-coords{margin:14px 0}'+
+ '.contact-coords a{color:inherit!important;font-weight:600;text-decoration:underline}'+
+ '.contact-coords .soc{justify-content:flex-start}';
 document.head.appendChild(st);
 
-/* ===== PAGE CONTACT : email sous "Siège social" ===== */
+/* ===== PAGE CONTACT : email + réseaux sous "Siège social" ===== */
 if(document.getElementById('send')||/contact/.test(location.pathname)){
  var tgt=null;
  document.querySelectorAll('p,div,li').forEach(function(e){
   if(!tgt&&e.children.length===0&&/^\s*(Siège social|Head office)/.test(e.textContent))tgt=e;
  });
- var box=document.createElement('p');box.className='contact-coords';box.innerHTML=c.join('<br>');
+ var box=document.createElement('div');box.className='contact-coords';
+ box.innerHTML=(c.length?'<p>'+c.join('<br>')+'</p>':'')+pills();
  if(tgt){tgt.parentNode.insertBefore(box,tgt.nextSibling)}
  else{var f=document.getElementById('send');if(f)f.parentNode.insertBefore(box,f.parentNode.firstChild)}
 }
