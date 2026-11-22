@@ -17,13 +17,3 @@ function pills(){
   return n[1]
    ?'<a href="'+n[1]+'" target="_blank" rel="noopener" aria-label="'+n[0]+'" title="'+n[0]+'">'+ic+'</a>'
    :'<span aria-label="'+n[0]+'" title="'+n[0]+'">'+ic+'</span>';
- }).join('')+'</div>';
-}
-
-/* ===== STYLE ===== */
-var st=document.createElement('style');
-st.textContent=
- 'footer .fg{display:flex!important;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:28px 40px}'+
- 'footer .fg>.fb{flex:1 1 340px}'+
- 'footer .fg>.fs{flex:0 1 auto}'+
- 'footer .fg>.ql{order:3;flex:0 0 100%;display:flex;flex-wrap:wrap;align-items:center;gap:10px 30px;padding-top:22px;border-top:1px
