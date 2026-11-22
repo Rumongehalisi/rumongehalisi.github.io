@@ -1,4 +1,4 @@
-/* script.js v6 */
+/* script.js v7 */
 var EMAIL="rumongehalisiassociation@outlook.com",WHATSAPP="",FACEBOOK="",INSTAGRAM="",TIKTOK="",YOUTUBE="",TELEPHONE="";
 (function(){
 /* ===== LOGOS (SVG intégrés, couleurs d'origine) ===== */
@@ -97,8 +97,4 @@ if(document.getElementById('send')||/contact/.test(location.pathname)){
  var lines=[];
  if(EMAIL)lines.push('✉️ <a href="mailto:'+EMAIL+'">'+EMAIL+'</a>');
  if(TELEPHONE)lines.push('📞 '+TELEPHONE);
- if(lines.length){var p=document.createElement('p');p.innerHTML=lines.join('FACEBOOK="https://www.facebook.com/votrepage"
-INSTAGRAM="https://www.instagram.com/votrecompte"
-TIKTOK="https://www.tiktok.com/@votrecompte"
-YOUTUBE="https://www.youtube.com/@votrechaine"
-WHATSAPP="25779000000"
+ if(lines.length){var p=document.createElement('p');p.innerHTML=lines.join('
