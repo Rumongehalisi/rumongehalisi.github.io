@@ -1,4 +1,4 @@
-/* script.js v8 */
+/* script.js v9 */
 var EMAIL="rumongehalisiassociation@outlook.com",WHATSAPP="",FACEBOOK="",INSTAGRAM="",TIKTOK="",YOUTUBE="",TELEPHONE="";
 /* Optionnel : lien Formspree (https://formspree.io/f/xxxxxxxx) pour envoyer le formulaire sans ouvrir la messagerie */
 var FORMSPREE="";
@@ -6,6 +6,10 @@ var FORMSPREE="";
    var DONS=[{t:"Virement bancaire",d:"Banque … – Compte n° … – Intitulé : Association de Rumonge Halisi"},{t:"Mobile money",d:"Lumicash : +257 …"}]; */
 var DONS=[];
 (function(){
+/* ===== EMPÊCHE LA TRADUCTION AUTOMATIQUE DU NAVIGATEUR (le bouton EN/FR du site fait la traduction) ===== */
+document.documentElement.setAttribute('translate','no');
+var mt=document.createElement('meta');mt.name='google';mt.content='notranslate';document.head.appendChild(mt);
+
 /* ===== LOGOS (SVG intégrés, couleurs d'origine) ===== */
 var TT='M16.6 5.8c-.7-.8-1.1-1.8-1.1-2.8h-2.9v12.3c0 1.4-1.1 2.5-2.5 2.5s-2.5-1.1-2.5-2.5 1.1-2.5 2.5-2.5c.3 0 .5 0 .8.1V9.9c-.3 0-.5-.1-.8-.1-3 0-5.4 2.4-5.4 5.4s2.4 5.4 5.4 5.4 5.4-2.4 5.4-5.4V9.2c1.1.8 2.4 1.3 3.8 1.3V7.6c-1.2 0-2.4-.7-3.2-1.8z';
 var H='<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24">';
@@ -62,4 +66,62 @@ if(ft){
   addr=fg.children[0].querySelector('p');
   if(addr)addrFR=addr.innerHTML;
  }
- ft.querySelectorAll('h2,h3
+ ft.querySelectorAll('h2,h3,h4,h5').forEach(function(h){
+  var t=h.textContent.trim(),col=h.parentNode;
+  if(!col||col===ft||col===fg)return;
+  if(/^(Liens rapides|Quick links)$/.test(t))col.classList.add('ql');
+  if(/^(Suivez-nous|Follow us)$/.test(t))col.parentNode.removeChild(col);
+ });
+ var blk=document.createElement('div');blk.id='soc-block';blk.className='fs';
+ blk.innerHTML='<h4 data-en="Follow us">Suivez-nous</h4>';
+ blk.appendChild(social('#fff'));
+ if(fg)fg.appendChild(blk);
+ else{var cp=ft.querySelector('.copy');if(cp&&cp.parentNode)cp.parentNode.insertBefore(blk,cp);else ft.appendChild(blk)}
+}
+
+/* ===== LANGUE FR / EN (via les attributs data-en du HTML) ===== */
+var en=false;try{en=localStorage.getItem('lang')==='en'}catch(x){}
+var els=document.querySelectorAll('[data-en]'),b=document.getElementById('lang'),nav=document.getElementById('nav');
+els.forEach(function(e){e.setAttribute('data-fr',e.textContent)});
+function ap(){
+ els.forEach(function(e){e.textContent=e.getAttribute(en?'data-en':'data-fr')});
+ if(addr)addr.innerHTML=en?ADDR_EN:addrFR;
+ document.documentElement.lang=en?'en':'fr';
+ if(b){b.textContent=en?'FR':'EN';b.setAttribute('aria-label',en?'Passer en français':'Switch to English')}
+}
+if(b)b.onclick=function(){en=!en;try{localStorage.setItem('lang',en?'en':'fr')}catch(x){}ap()};
+if(en)ap();
+
+/* ===== MENU MOBILE ===== */
+var mn=document.getElementById('menu');
+function closeMenu(){if(nav)nav.classList.remove('open');if(mn)mn.setAttribute('aria-expanded','false')}
+if(mn&&nav){
+ mn.onclick=function(){mn.setAttribute('aria-expanded',nav.classList.toggle('open'))};
+ nav.addEventListener('click',function(e){if(e.target.tagName==='A')closeMenu()});
+ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeMenu()});
+}
+
+/* ===== PAGE CONTACT : email + réseaux sous "Siège social" ===== */
+if(document.getElementById('send')||/contact/.test(location.pathname)){
+ var tgt=null;
+ document.querySelectorAll('p,div,li').forEach(function(e){
+  if(!tgt&&e.children.length===0&&/^\s*(Siège social|Registered office|Head office)/.test(e.textContent))tgt=e;
+ });
+ var box=document.createElement('div');box.className='contact-coords';
+ var lines=[];
+ if(EMAIL)lines.push('✉️ <a href="mailto:'+EMAIL+'">'+EMAIL+'</a>');
+ if(TELEPHONE)lines.push('📞 <a href="tel:'+TELEPHONE.replace(/[^+\d]/g,'')+'">'+TELEPHONE+'</a>');
+ if(lines.length){var p=document.createElement('p');p.innerHTML=lines.join('<br>');box.appendChild(p)}
+ box.appendChild(social('#14701f'));
+ if(tgt&&tgt.parentNode)tgt.parentNode.insertBefore(box,tgt.nextSibling);
+}
+
+/* ===== FORMULAIRE DE CONTACT ===== */
+var s=document.getElementById('send'),stt=document.getElementById('st');
+function say(fr,eng,err){if(stt){stt.textContent=en?eng:fr;stt.className=err?'err':''}}
+if(s)s.onclick=function(){
+ var nm=document.getElementById('nm').value.trim(),em=document.getElementById('em').value.trim(),sj=document.getElementById('sj').value,ms=document.getElementById('ms').value.trim();
+ if(!ms){say('Écrivez votre message avant d’envoyer.','Please write your message first.',1);return}
+ if(FORMSPREE){
+  s.disabled=true;
+  fetch(FORMSPREE,{method:'POST',headers:{'Accept':'application/json','Content-Type':'application/json'},body:JSON.stringify({name:nm,email:em,subject
