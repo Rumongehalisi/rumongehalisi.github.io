@@ -9,7 +9,6 @@ var DONS=[];
 /* ===== EMPÊCHE LA TRADUCTION AUTOMATIQUE DU NAVIGATEUR (le bouton EN/FR du site fait la traduction) ===== */
 document.documentElement.setAttribute('translate','no');
 var mt=document.createElement('meta');mt.name='google';mt.content='notranslate';document.head.appendChild(mt);
-
 /* ===== LOGOS (SVG intégrés, couleurs d'origine) ===== */
 var TT='M16.6 5.8c-.7-.8-1.1-1.8-1.1-2.8h-2.9v12.3c0 1.4-1.1 2.5-2.5 2.5s-2.5-1.1-2.5-2.5 1.1-2.5 2.5-2.5c.3 0 .5 0 .8.1V9.9c-.3 0-.5-.1-.8-.1-3 0-5.4 2.4-5.4 5.4s2.4 5.4 5.4 5.4 5.4-2.4 5.4-5.4V9.2c1.1.8 2.4 1.3 3.8 1.3V7.6c-1.2 0-2.4-.7-3.2-1.8z';
 var H='<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24">';
@@ -124,4 +123,25 @@ if(s)s.onclick=function(){
  if(!ms){say('Écrivez votre message avant d’envoyer.','Please write your message first.',1);return}
  if(FORMSPREE){
   s.disabled=true;
-  fetch(FORMSPREE,{method:'POST',headers:{'Accept':'application/json','Content-Type':'application/json'},body:JSON.stringify({name:nm,email:em,subject
+  fetch(FORMSPREE,{method:'POST',headers:{'Accept':'application/json','Content-Type':'application/json'},body:JSON.stringify({name:nm,email:em,subject:sj,message:ms})})
+  .then(function(r){if(!r.ok)throw 0;say('Merci, votre message est envoyé.','Thank you, your message has been sent.');document.getElementById('ms').value=''})
+  .catch(function(){say('Envoi impossible. Réessayez ou écrivez-nous directement.','Could not send. Try again or write to us directly.',1)})
+  .then(function(){s.disabled=false});
+  return;
+ }
+ var body=ms+(nm||em?'\n\n'+nm+(em?' <'+em+'>':''):'');
+ if(EMAIL){location.href='mailto:'+EMAIL+'?subject='+encodeURIComponent(sj+(nm?' – '+nm:''))+'&body='+encodeURIComponent(body);return}
+ if(WHATSAPP){window.open('https://wa.me/'+WHATSAPP+'?text='+encodeURIComponent(sj+' : '+body),'_blank','noopener');return}
+ say('Le formulaire n’est pas encore configuré.','The form is not configured yet.',1);
+};
+
+/* ===== PAGE DON : moyens de paiement ===== */
+var dm=document.getElementById('donmethods');
+if(dm&&DONS.length){
+ DONS.forEach(function(x){
+  var d=document.createElement('div'),h=document.createElement('h3'),q=document.createElement('p');
+  d.className='card';h.textContent=x.t;q.textContent=x.d;d.appendChild(h);d.appendChild(q);dm.appendChild(d);
+ });
+ var fb=document.getElementById('donfallback');if(fb)fb.hidden=true;
+}
+})();
