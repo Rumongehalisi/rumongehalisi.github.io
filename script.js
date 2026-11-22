@@ -1,3 +1,4 @@
+/* script.js v5 */
 var EMAIL="rumongehalisiassociation@outlook.com",WHATSAPP="",FACEBOOK="",INSTAGRAM="",TIKTOK="",YOUTUBE="",TELEPHONE="";
 (function(){
 /* ===== LOGOS (SVG intégrés, couleurs d'origine) ===== */
@@ -17,3 +18,41 @@ function pills(){
   return n[1]
    ?'<a href="'+n[1]+'" target="_blank" rel="noopener" aria-label="'+n[0]+'" title="'+n[0]+'">'+ic+'</a>'
    :'<span aria-label="'+n[0]+'" title="'+n[0]+'">'+ic+'</span>';
+ }).join('')+'</div>';
+}
+
+/* ===== STYLE ===== */
+var st=document.createElement('style');
+st.textContent=
+ 'footer .fg{display:flex!important;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:28px 40px}'+
+ 'footer .fg>.fb{flex:1 1 340px}'+
+ 'footer .fg>.fs{flex:0 1 auto}'+
+ 'footer .fg>.ql{order:3;flex:0 0 100%;display:flex;flex-wrap:wrap;align-items:center;gap:10px 30px;padding-top:22px;border-top:1px solid rgba(255,255,255,.18)}'+
+ 'footer .fg>.ql h4{flex:0 0 100%;margin:0 0 2px}'+
+ 'footer .fg>.ql a{display:inline-block!important;padding:0!important;margin:0!important}'+
+ '.soc{display:flex;flex-wrap:wrap;gap:12px}'+
+ '.soc a,.soc span{display:block!important;width:46px;height:46px;padding:0!important;margin:0!important;border-radius:50%;box-shadow:0 0 0 2px #fff;opacity:1!important;filter:none!important;transition:transform .15s}'+
+ '.soc a{cursor:pointer}.soc span{cursor:default}'+
+ '.soc a:hover{transform:translateY(-3px)}'+
+ '.soc svg{width:100%;height:100%;display:block}'+
+ '.contact-coords{margin:14px 0}'+
+ '.contact-coords .soc{margin-top:10px}'+
+ '.contact-coords .soc a,.contact-coords .soc span{box-shadow:0 0 0 2px #1b5e20}';
+document.head.appendChild(st);
+
+/* ===== BARRE DU HAUT : on retire la zone des coordonnées ===== */
+document.querySelectorAll('.top .coords').forEach(function(e){e.parentNode.removeChild(e)});
+
+/* ===== PIED DE PAGE (le bloc réseaux est créé s'il n'existe pas) ===== */
+var ft=document.querySelector('footer');
+if(ft){
+ var fg=ft.querySelector('.fg');
+ var q=null,f=null;
+ ft.querySelectorAll('h2,h3,h4,h5').forEach(function(h){
+  var t=h.textContent.trim();
+  if(/^(Liens rapides|Quick links)$/.test(t))q=h;
+  if(/^(Suivez-nous|Follow us)$/.test(t))f=h;
+ });
+ if(fg&&fg.children[0])fg.children[0].classList.add('fb');
+ if(q&&q.parentNode!==ft&&q.parentNode!==fg)q.parentNode.classList.add('ql');
+ if(f&&f.parentNode!==ft&&f.parentNode!==fg){
