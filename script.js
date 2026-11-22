@@ -1,12 +1,19 @@
 var EMAIL="rumongehalisiassociation@outlook.com",WHATSAPP="",FACEBOOK="",INSTAGRAM="",TIKTOK="",YOUTUBE="",TELEPHONE="";
 (function(){
-/* ===== RESEAUX SOCIAUX : boutons (grisés tant que le lien est vide) ===== */
-var nets=[['Facebook',FACEBOOK],['Instagram',INSTAGRAM],['TikTok',TIKTOK],['YouTube',YOUTUBE],['WhatsApp',WHATSAPP?'https://wa.me/'+WHATSAPP:'']];
+/* ===== RESEAUX SOCIAUX : logos officiels (grisés tant que le lien est vide) ===== */
+var nets=[
+ ['Facebook','facebook','1877F2',FACEBOOK],
+ ['Instagram','instagram','E4405F',INSTAGRAM],
+ ['TikTok','tiktok','000000',TIKTOK],
+ ['YouTube','youtube','FF0000',YOUTUBE],
+ ['WhatsApp','whatsapp','25D366',WHATSAPP?'https://wa.me/'+WHATSAPP:'']
+];
 function pills(){
  return '<div class="soc">'+nets.map(function(n){
-  return n[1]
-   ?'<a href="'+n[1]+'" target="_blank" rel="noopener">'+n[0]+'</a>'
-   :'<span title="Bientôt / Soon">'+n[0]+'</span>';
+  var img='<img src="https://cdn.simpleicons.org/'+n[1]+'/'+n[2]+'" alt="'+n[0]+'" onerror="this.replaceWith(\''+n[0].charAt(0)+'\')">';
+  return n[3]
+   ?'<a href="'+n[3]+'" target="_blank" rel="noopener" aria-label="'+n[0]+'" title="'+n[0]+'">'+img+'</a>'
+   :'<span aria-label="'+n[0]+'" title="'+n[0]+' – Bientôt / Soon">'+img+'</span>';
  }).join('')+'</div>';
 }
 
@@ -20,11 +27,12 @@ st.textContent=
  'footer .fg>.ql{order:3;flex:0 0 100%;display:flex;flex-wrap:wrap;align-items:center;gap:10px 30px;padding-top:22px;border-top:1px solid rgba(255,255,255,.18)}'+
  'footer .fg>.ql h4{flex:0 0 100%;margin:0 0 2px}'+
  'footer .fg>.ql a{display:inline-block!important;padding:0!important;margin:0!important}'+
- /* boutons réseaux sociaux */
- '.soc{display:flex;flex-wrap:wrap;gap:10px}'+
- '.soc a,.soc span{display:inline-block;padding:9px 20px;border-radius:999px;font-size:.9rem;font-weight:700;text-decoration:none;line-height:1.2;background:#fff;color:#1b5e20!important;border:2px solid #1b5e20}'+
- '.soc a:hover{background:#1b5e20;color:#fff!important}'+
- '.soc span{background:#eee;color:#888!important;border-color:#ccc;cursor:default}'+
+ /* logos réseaux sociaux */
+ '.soc{display:flex;flex-wrap:wrap;gap:12px}'+
+ '.soc a,.soc span{display:flex!important;align-items:center;justify-content:center;width:46px;height:46px;padding:0!important;border-radius:50%;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.12);font-weight:700;color:#1b5e20!important;text-decoration:none;transition:transform .15s}'+
+ '.soc a:hover{transform:translateY(-3px)}'+
+ '.soc span{opacity:.45;cursor:default;filter:grayscale(1)}'+
+ '.soc img{width:22px;height:22px;display:block;margin:0}'+
  /* page Contact */
  '.contact-coords{margin:14px 0}'+
  '.contact-coords .soc{margin-top:10px}';
