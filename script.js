@@ -1,5 +1,6 @@
 var EMAIL="rumongehalisiassociation@outlook.com",WHATSAPP="",FACEBOOK="",INSTAGRAM="",TIKTOK="",YOUTUBE="",TELEPHONE="";
 (function(){
+/* ===== TRADUCTIONS FR -> EN ===== */
 var T={
 "Rumonge, Burundi · Association sans but lucratif et apolitique":"Rumonge, Burundi · Non-profit, non-political association",
 "Accueil":"Home","À propos":"About","Mission":"Mission","Vision":"Vision","Valeurs":"Values","URAI":"URAI","Actualités":"News","Aider":"Help","Rapports":"Reports","Contact":"Contact","Partenaires":"Partners","Faire un don":"Donate",
@@ -36,6 +37,7 @@ var T={
 var P=[["Tous droits réservés.","All rights reserved."]];
 var en=false;try{en=localStorage.getItem('lang')==='en'}catch(x){}
 
+/* ===== COLLECTE DES TEXTES DE LA PAGE ===== */
 var nodes=[];
 (function walk(n){
  for(var c=n.firstChild;c;c=c.nextSibling){
@@ -51,6 +53,7 @@ function tr(s){
  return s;
 }
 
+/* ===== BOUTON DE LANGUE ===== */
 var b=document.getElementById('lang');
 if(!b){Array.prototype.forEach.call(document.querySelectorAll('a,button'),function(e){if(e.textContent.trim()==='EN')b=e})}
 function ap(){
@@ -61,12 +64,34 @@ function ap(){
 if(b)b.onclick=function(ev){if(ev)ev.preventDefault();en=!en;try{localStorage.setItem('lang',en?'en':'fr')}catch(x){}ap();return false};
 if(en)ap();
 
+/* ===== MENU MOBILE ===== */
 var mn=document.getElementById('menu'),nav=document.getElementById('nav');
 if(mn&&nav)mn.onclick=function(){nav.classList.toggle('open')};
 
-var c=[];if(EMAIL)c.push('✉️ <a href="mailto:'+EMAIL+'">'+EMAIL+'</a>');if(TELEPHONE)c.push('📞 '+TELEPHONE);if(WHATSAPP)c.push('💬 <a href="https://wa.me/'+WHATSAPP+'">WhatsApp</a>');[['Facebook',FACEBOOK],['Instagram',INSTAGRAM],['TikTok',TIKTOK],['YouTube',YOUTUBE]].forEach(function(x){if(x[1])c.push('🔗 <a href="'+x[1]+'">'+x[0]+'</a>')});
-document.querySelectorAll('.coords').forEach(function(e){e.innerHTML=c.join('<br>')});
+/* ===== COORDONNEES (email, réseaux) ===== */
+var c=[];
+if(EMAIL)c.push('✉️ <a href="mailto:'+EMAIL+'">'+EMAIL+'</a>');
+if(TELEPHONE)c.push('📞 '+TELEPHONE);
+if(WHATSAPP)c.push('💬 <a href="https://wa.me/'+WHATSAPP+'">WhatsApp</a>');
+[['Facebook',FACEBOOK],['Instagram',INSTAGRAM],['TikTok',TIKTOK],['YouTube',YOUTUBE]].forEach(function(x){if(x[1])c.push('🔗 <a href="'+x[1]+'">'+x[0]+'</a>')});
 
+var st=document.createElement('style');
+st.textContent='.contact-coords{margin:14px 0}.contact-coords a{color:#1b5e20!important;text-decoration:underline;font-weight:600}';
+document.head.appendChild(st);
+
+/* on retire l'email de la barre du haut sur toutes les pages */
+document.querySelectorAll('.coords').forEach(function(e){e.innerHTML='';e.style.display='none'});
+
+/* on l'affiche uniquement sur la page Contact, sous "Siège social" */
+if(document.getElementById('send')||/contact/.test(location.pathname)){
+ var tgt=null;
+ document.querySelectorAll('p,div,li').forEach(function(e){if(!tgt&&e.children.length===0&&/^\s*Siège social/.test(e.textContent))tgt=e});
+ var box=document.createElement('p');box.className='contact-coords';box.innerHTML=c.join('<br>');
+ if(tgt){tgt.parentNode.insertBefore(box,tgt.nextSibling)}
+ else{var f=document.getElementById('send');if(f)f.parentNode.insertBefore(box,f.parentNode.firstChild)}
+}
+
+/* ===== BOUTON ENVOYER (formulaire) ===== */
 var s=document.getElementById('send');
 if(s)s.onclick=function(){if(!EMAIL){alert('Email non configuré / not set');return}
 location.href='mailto:'+EMAIL+'?subject='+encodeURIComponent(document.getElementById('sj').value+' – '+document.getElementById('nm').value)+'&body='+encodeURIComponent(document.getElementById('ms').value)};
