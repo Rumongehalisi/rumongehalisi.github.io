@@ -1,4 +1,4 @@
-/* script.js v15 */
+/* script.js v16 */
 /* =====================================================================
    À REMPLIR UNIQUEMENT ICI (lignes 1 à 25). Ne touchez pas au reste.
    - Laissez "" pour ce que vous n'avez pas : rien ne s'affichera.
@@ -13,6 +13,8 @@ var INSTAGRAM="";
 var TIKTOK="";
 var YOUTUBE="";
 var TELEPHONE="";
+/* true = les 5 icônes s'affichent toujours (celles sans lien sont grisées au clic) ; false = seulement celles avec un lien */
+var SHOW_EMPTY=true;
 /* Lien Formspree : envoi du formulaire de contact */
 var FORMSPREE="https://formspree.io/f/xeagpoby";
 /* Moyens de don (page Don). Chaque ligne : t = titre, d = détail, te / de = version anglaise.
@@ -39,16 +41,16 @@ var ICONS={
 function uri(s){return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s)}
 
 /* ===== RESEAUX SOCIAUX : seuls les liens renseignés s'affichent ===== */
-var nets=[['Facebook',FACEBOOK],['Instagram',INSTAGRAM],['TikTok',TIKTOK],['YouTube',YOUTUBE],['WhatsApp',WHATSAPP?'https://wa.me/'+WHATSAPP:'']].filter(function(n){return n[1]});
+var nets=[['Facebook',FACEBOOK],['Instagram',INSTAGRAM],['TikTok',TIKTOK],['YouTube',YOUTUBE],['WhatsApp',WHATSAPP?'https://wa.me/'+WHATSAPP:'']].filter(function(n){return SHOW_EMPTY||n[1]});
 function social(border){
  if(!nets.length)return null;
  var w=document.createElement('div');
  w.style.cssText='display:flex;flex-wrap:wrap;gap:12px;align-items:center';
  nets.forEach(function(n){
-  var el=document.createElement('a');
-  el.href=n[1];el.target='_blank';el.rel='noopener';
-  el.title=n[0];el.setAttribute('aria-label',n[0]);
-  el.style.cssText='display:inline-block!important;width:46px!important;height:46px!important;padding:0!important;margin:0!important;border-radius:50%!important;overflow:hidden!important;background:#fff!important;box-shadow:0 0 0 2px '+border+'!important;opacity:1!important;filter:none!important;line-height:0!important;cursor:pointer';
+  var el=document.createElement(n[1]?'a':'span');
+  if(n[1]){el.href=n[1];el.target='_blank';el.rel='noopener'}
+  el.title=n[0]+(n[1]?'':' – bientôt');el.setAttribute('aria-label',n[0]);
+  el.style.cssText='display:inline-block!important;width:46px!important;height:46px!important;padding:0!important;margin:0!important;border-radius:50%!important;overflow:hidden!important;background:#fff!important;box-shadow:0 0 0 2px '+border+'!important;opacity:1!important;filter:none!important;line-height:0!important;cursor:'+(n[1]?'pointer':'default');
   var im=document.createElement('img');
   im.src=uri(ICONS[n[0]]);im.alt='';
   im.style.cssText='display:block!important;width:100%!important;height:100%!important;max-width:none!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important';
