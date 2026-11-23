@@ -1,4 +1,4 @@
-/* script.js v16 */
+/* script.js v17 */
 /* =====================================================================
    À REMPLIR UNIQUEMENT ICI (lignes 1 à 25). Ne touchez pas au reste.
    - Laissez "" pour ce que vous n'avez pas : rien ne s'affichera.
@@ -17,11 +17,13 @@ var TELEPHONE="";
 var SHOW_EMPTY=true;
 /* Lien Formspree : envoi du formulaire de contact */
 var FORMSPREE="https://formspree.io/f/xeagpoby";
-/* Moyens de don (page Don). Chaque ligne : t = titre, d = détail, te / de = version anglaise.
-   Exemple à ajouter (ne mettez que des informations RÉELLES) :
-   {t:"Mobile money (Lumicash)",d:"+257 79 12 34 56 – Nom : Association de Rumonge Halisi",te:"Mobile money (Lumicash)",de:"+257 79 12 34 56 – Name: Association de Rumonge Halisi"}, */
+/* Moyens de don (page Don). Chaque ligne : i = icône ("mobile" ou "bank"), t = titre, d = détail, te / de = version anglaise.
+   Quand vous avez les vrais numéros, remplacez le texte de d (et de) par exemple :
+   d:"Numéro : +257 79 00 00 00 – Nom : Association de Rumonge Halisi"
+   N'écrivez que des informations RÉELLES. */
 var DONS=[
- {t:"Obtenir les coordonnées de paiement",d:"Écrivez-nous via la page Contact ou par e-mail à "+EMAIL+" : nous vous indiquerons les moyens de paiement disponibles (mobile money, banque, depuis l’étranger).",te:"Get the payment details",de:"Write to us via the Contact page or by email at "+EMAIL+": we will tell you the payment options available (mobile money, bank, from abroad)."}
+ {i:"mobile",t:"Lumicash (mobile money)",d:"Le numéro de paiement est communiqué sur demande : écrivez-nous via la page Contact ou par e-mail à "+EMAIL+".",te:"Lumicash (mobile money)",de:"The payment number is provided on request: write to us via the Contact page or by email at "+EMAIL+"."},
+ {i:"bank",t:"Virement bancaire",d:"Les coordonnées bancaires sont communiquées sur demande : écrivez-nous via la page Contact ou par e-mail à "+EMAIL+".",te:"Bank transfer",de:"The bank details are provided on request: write to us via the Contact page or by email at "+EMAIL+"."}
 ];
 /* ===================== FIN DE LA ZONE À REMPLIR ===================== */
 
@@ -115,12 +117,19 @@ if(ft){
  }
 }
 
+/* ===== ICÔNES DE PAIEMENT (génériques) ===== */
+var PAY={
+ mobile:H+'<rect x="6.5" y="2" width="11" height="20" rx="2.5" fill="none" stroke="#14701f" stroke-width="1.8"/><circle cx="12" cy="18.6" r="1" fill="#14701f"/><circle cx="12" cy="10.5" r="3.2" fill="#14701f"/><text x="12" y="12" font-family="Arial,sans-serif" font-size="4.4" font-weight="700" fill="#fff" text-anchor="middle">F</text></svg>',
+ bank:H+'<path fill="#14701f" d="M12 2.5 3 8v1.5h18V8z"/><rect x="5" y="11" width="2.4" height="7" fill="#14701f"/><rect x="10.8" y="11" width="2.4" height="7" fill="#14701f"/><rect x="16.6" y="11" width="2.4" height="7" fill="#14701f"/><rect x="3" y="19.5" width="18" height="2" fill="#14701f"/></svg>'
+};
+
 /* ===== PAGE DON : moyens de paiement (avant la langue pour être traduits) ===== */
 var dm=document.getElementById('donmethods');
 if(dm&&DONS.length){
  DONS.forEach(function(x){
   var d=document.createElement('div'),h=document.createElement('h3'),q=document.createElement('p');
   d.className='card';
+  if(x.i&&PAY[x.i]){var pi=document.createElement('img');pi.src=uri(PAY[x.i]);pi.alt='';pi.width=48;pi.height=48;pi.style.cssText='display:block;margin:0 0 10px';d.appendChild(pi)}
   h.textContent=x.t;q.textContent=x.d;
   if(x.te)h.setAttribute('data-en',x.te);
   if(x.de)q.setAttribute('data-en',x.de);
