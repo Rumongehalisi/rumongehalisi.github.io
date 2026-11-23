@@ -1,72 +1,53 @@
 
 /* =====================================================
    ASSOCIATION DE RUMONGE HALISI
-   SYSTEME COMPLET : FR / EN + MENU + CONTACT
+   SCRIPT GLOBAL : LANGUES + MENU + CONTACT
    ===================================================== */
 
 (function () {
   'use strict';
 
   /* =====================================================
-     1. GESTION DES LANGUES FRANCAIS / ANGLAIS
+     1. LANGUE FRANCAIS / ANGLAIS
      ===================================================== */
 
   var langButton = document.getElementById('lang');
   var currentLang = 'fr';
 
-  // Lire la langue précédemment choisie
   try {
-    var savedLang = localStorage.getItem('site-language');
+    var saved = localStorage.getItem('site-language');
 
-    if (savedLang === 'fr' || savedLang === 'en') {
-      currentLang = savedLang;
+    if (saved === 'fr' || saved === 'en') {
+      currentLang = saved;
     }
-  } catch (error) {
-    console.warn('Stockage de la langue indisponible.');
-  }
+  } catch (e) {}
 
-  // Traduire tous les éléments portant data-en
   function translatePage(lang) {
     currentLang = lang;
     document.documentElement.lang = lang;
 
-    var elements = document.querySelectorAll('[data-en]');
+    document.querySelectorAll('[data-en]').forEach(function (el) {
 
-    elements.forEach(function (element) {
-
-      // Conserver le texte français original
-      if (!element.hasAttribute('data-fr')) {
-        element.setAttribute('data-fr', element.textContent);
+      if (!el.hasAttribute('data-fr')) {
+        el.setAttribute('data-fr', el.textContent);
       }
 
-      var french = element.getAttribute('data-fr');
-      var english = element.getAttribute('data-en');
-
-      element.textContent = lang === 'en' ? english : french;
+      el.textContent = lang === 'en'
+        ? el.getAttribute('data-en')
+        : el.getAttribute('data-fr');
     });
 
-    // Modifier le bouton de langue
     if (langButton) {
       langButton.textContent = lang === 'fr' ? 'EN' : 'FR';
-
-      langButton.setAttribute(
-        'aria-label',
-        lang === 'fr' ? 'Switch to English' : 'Passer en français'
-      );
     }
 
-    // Mémoriser le choix
     try {
       localStorage.setItem('site-language', lang);
-    } catch (error) {
-      console.warn('Impossible de sauvegarder la langue.');
-    }
+    } catch (e) {}
 
-    // Actualiser les messages du formulaire si nécessaire
-    updateContactLanguage();
+    refreshFormStatus();
   }
 
-  // Bouton FR / EN
   if (langButton) {
     langButton.addEventListener('click', function () {
       translatePage(currentLang === 'fr' ? 'en' : 'fr');
@@ -75,89 +56,76 @@
 
 
   /* =====================================================
-     2. MENU DE NAVIGATION MOBILE
+     2. MENU MOBILE
      ===================================================== */
 
   var menuButton = document.getElementById('menu');
-  var navigation = document.getElementById('nav');
+  var nav = document.getElementById('nav');
 
-  if (menuButton && navigation) {
+  if (menuButton && nav) {
 
     menuButton.addEventListener('click', function () {
 
-      var isOpen = navigation.classList.toggle('open');
+      var opened = nav.classList.toggle('open');
 
       menuButton.setAttribute(
         'aria-expanded',
-        isOpen ? 'true' : 'false'
+        opened ? 'true' : 'false'
       );
 
-      menuButton.textContent = isOpen ? '✕' : '☰';
+      menuButton.textContent = opened ? '✕' : '☰';
     });
 
-    // Fermer le menu après avoir choisi une page
-    navigation.querySelectorAll('a').forEach(function (link) {
-
+    nav.querySelectorAll('a').forEach(function (link) {
       link.addEventListener('click', function () {
-        navigation.classList.remove('open');
-
+        nav.classList.remove('open');
         menuButton.setAttribute('aria-expanded', 'false');
         menuButton.textContent = '☰';
       });
-
     });
-
   }
 
 
   /* =====================================================
-     3. FORMULAIRE DE CONTACT - FORMSPREE
+     3. FORMULAIRE DE CONTACT
      ===================================================== */
 
   var FORMSPREE = 'https://formspree.io/f/xeagpoby';
 
   var sendButton = document.getElementById('send');
-  var statusElement = document.getElementById('st');
+  var status = document.getElementById('st');
 
-  var contactStatus = null;
   var sending = false;
+  var lastStatus = null;
 
   function isEnglish() {
-    return document.documentElement.lang === 'en';
+    return currentLang === 'en';
   }
 
-  // Afficher les messages dans la langue choisie
-  function showStatus(fr, en, success) {
+  function refreshFormStatus() {
+    if (!status || !lastStatus) return;
 
-    contactStatus = {
+    status.textContent = isEnglish()
+      ? lastStatus.en
+      : lastStatus.fr;
+
+    status.className = lastStatus.success ? 'ok' : 'ko';
+  }
+
+  function showStatus(fr, en, success) {
+    lastStatus = {
       fr: fr,
       en: en,
       success: success
     };
 
-    updateContactLanguage();
+    refreshFormStatus();
   }
 
-  function updateContactLanguage() {
-
-    if (!statusElement || !contactStatus) {
-      return;
-    }
-
-    statusElement.textContent = isEnglish()
-      ? contactStatus.en
-      : contactStatus.fr;
-
-    statusElement.className = contactStatus.success
-      ? 'ok'
-      : 'ko';
-  }
-
-  // Afficher ou supprimer les erreurs des champs
   function setError(id, fr, en, invalid) {
 
     var field = document.getElementById(id);
-    var errorElement = document.getElementById(id + '-e');
+    var error = document.getElementById(id + '-e');
 
     if (field) {
       field.setAttribute(
@@ -166,20 +134,23 @@
       );
     }
 
-    if (errorElement) {
-      errorElement.textContent = invalid
+    if (error) {
+      error.textContent = invalid
         ? (isEnglish() ? en : fr)
         : '';
     }
   }
 
-  // Vérifier les champs du formulaire
+
+  /* =====================================================
+     4. VALIDATION DES CHAMPS
+     ===================================================== */
+
   function validateForm() {
 
     var name = document.getElementById('nm');
     var email = document.getElementById('em');
     var message = document.getElementById('ms');
-    var consent = document.getElementById('cs');
 
     var valid = true;
 
@@ -195,15 +166,13 @@
       valid = false;
 
     } else {
-
       setError('nm', '', '', false);
     }
 
-
-    var emailValid = email &&
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
-
-    if (!emailValid) {
+    if (
+      !email ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())
+    ) {
 
       setError(
         'em',
@@ -215,10 +184,8 @@
       valid = false;
 
     } else {
-
       setError('em', '', '', false);
     }
-
 
     if (!message || !message.value.trim()) {
 
@@ -232,39 +199,20 @@
       valid = false;
 
     } else {
-
       setError('ms', '', '', false);
-    }
-
-
-    // Vérifier le consentement
-    var consentError = document.getElementById('cs-e');
-
-    if (consent && !consent.checked) {
-
-      if (consentError) {
-        consentError.textContent = isEnglish()
-          ? 'Please agree before sending your message.'
-          : 'Veuillez donner votre accord avant l’envoi.';
-      }
-
-      valid = false;
-
-    } else if (consentError) {
-
-      consentError.textContent = '';
     }
 
     return valid;
   }
 
 
-  // Envoyer le formulaire
-  async function sendContactMessage() {
+  /* =====================================================
+     5. ENVOI DU MESSAGE
+     ===================================================== */
 
-    if (sending) {
-      return;
-    }
+  async function sendMessage() {
+
+    if (sending) return;
 
     var name = document.getElementById('nm');
     var email = document.getElementById('em');
@@ -276,69 +224,53 @@
 
     if (!name || !email || !message) {
       showStatus(
-        'Le formulaire est incomplet.',
-        'The form is incomplete.',
-        false
-      );
-      return;
-    }
-
-    // Protection anti-spam
-    if (honeypot && honeypot.value.trim()) {
-      showStatus(
-        'Impossible de traiter cette demande.',
-        'Unable to process this request.',
+        'Formulaire incomplet.',
+        'Incomplete form.',
         false
       );
       return;
     }
 
     if (!validateForm()) {
-
       showStatus(
         'Veuillez corriger les champs indiqués.',
         'Please correct the highlighted fields.',
         false
       );
-
       return;
     }
 
-    if (!FORMSPREE) {
-
+    // Protection anti-robots
+    if (honeypot && honeypot.value.trim()) {
       showStatus(
-        'Le service de contact n’est pas configuré.',
-        'The contact service is not configured.',
+        'Demande impossible à traiter.',
+        'Unable to process request.',
         false
       );
-
       return;
     }
 
-    // Préparer les données
-    var formData = new FormData();
+    var data = new FormData();
 
-    formData.append('name', name.value.trim());
-    formData.append('email', email.value.trim());
-    formData.append('_replyto', email.value.trim());
-    formData.append('message', message.value.trim());
+    data.append('name', name.value.trim());
+    data.append('email', email.value.trim());
+    data.append('_replyto', email.value.trim());
+    data.append('message', message.value.trim());
 
     if (phone && phone.value.trim()) {
-      formData.append('phone', phone.value.trim());
+      data.append('phone', phone.value.trim());
     }
 
     if (subject) {
-      formData.append('subject', subject.value);
-      formData.append(
-        '_subject',
-        'Contact - Association de Rumonge Halisi'
-      );
+      data.append('subject', subject.value);
     }
 
-    formData.append('consent', consent && consent.checked ? 'Oui' : 'Non');
-
-    // Champ anti-spam Formspree
-    formData.append('_gotcha', '');
+    if (consent) {
+      data.append(
+        'consent',
+        consent.checked ? 'Oui' : 'Non'
+      );
+    }
 
     sending = true;
     sendButton.disabled = true;
@@ -348,7 +280,7 @@
       : 'Envoi en cours...';
 
     showStatus(
-      'Envoi de votre message en cours...',
+      'Envoi de votre message...',
       'Sending your message...',
       true
     );
@@ -357,10 +289,10 @@
 
       var response = await fetch(FORMSPREE, {
         method: 'POST',
-        body: formData,
         headers: {
           'Accept': 'application/json'
-        }
+        },
+        body: data
       });
 
       var result = await response.json().catch(function () {
@@ -368,46 +300,40 @@
       });
 
       if (!response.ok) {
-
-        var errorMessage = result.errors
-          ? result.errors.map(function (error) {
-              return error.message;
-            }).join(', ')
-          : 'HTTP ' + response.status;
-
-        throw new Error(errorMessage);
+        throw new Error(
+          result.errors
+            ? result.errors.map(function (e) {
+                return e.message;
+              }).join(', ')
+            : 'Erreur HTTP ' + response.status
+        );
       }
 
-      // Confirmation d'envoi
       showStatus(
-        'Votre message a été envoyé avec succès ! Merci de nous avoir contactés.',
-        'Your message has been sent successfully! Thank you for contacting us.',
+        'Votre message a été envoyé avec succès. Merci !',
+        'Your message has been sent successfully. Thank you!',
         true
       );
 
-      // Vider les champs après succès
       name.value = '';
       email.value = '';
       message.value = '';
 
       if (phone) phone.value = '';
-
       if (subject) subject.selectedIndex = 0;
-
       if (consent) consent.checked = false;
 
-      // Réinitialiser les erreurs
       ['nm', 'em', 'ms'].forEach(function (id) {
         setError(id, '', '', false);
       });
 
     } catch (error) {
 
-      console.error('Erreur Formspree :', error);
+      console.error('Erreur formulaire :', error);
 
       showStatus(
-        'Échec de l’envoi. Vérifiez votre connexion et la configuration de Formspree. Réessayez plus tard.',
-        'Message not sent. Please check your connection and Formspree configuration, then try again.',
+        'Échec de l’envoi. Vérifiez votre connexion et réessayez.',
+        'Sending failed. Check your connection and try again.',
         false
       );
 
@@ -422,45 +348,39 @@
     }
   }
 
-
-  // Activer le bouton d'envoi
   if (sendButton) {
-
     sendButton.addEventListener('click', function (event) {
-
       event.preventDefault();
-      sendContactMessage();
-
+      sendMessage();
     });
-
   }
 
 
-  // Nettoyer les erreurs lorsque l'utilisateur corrige un champ
+  /* =====================================================
+     6. SUPPRESSION DES ERREURS PENDANT LA SAISIE
+     ===================================================== */
+
   ['nm', 'em', 'ms'].forEach(function (id) {
 
     var field = document.getElementById(id);
 
     if (field) {
-
       field.addEventListener('input', function () {
         setError(id, '', '', false);
       });
-
     }
 
   });
 
 
   /* =====================================================
-     4. INITIALISATION DU SITE
+     7. DEMARRAGE DU SITE
      ===================================================== */
 
-  // Appliquer la langue sauvegardée
   translatePage(currentLang);
 
   console.log(
-    'Association de Rumonge Halisi : JavaScript chargé correctement.'
+    'Rumonge Halisi : système FR/EN et JavaScript activés.'
   );
 
 })();
