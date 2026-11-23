@@ -1,155 +1,466 @@
 
-/* ===== FORMULAIRE DE CONTACT ===== */
+/* =====================================================
+   ASSOCIATION DE RUMONGE HALISI
+   SYSTEME COMPLET : FR / EN + MENU + CONTACT
+   ===================================================== */
+
 (function () {
   'use strict';
 
+  /* =====================================================
+     1. GESTION DES LANGUES FRANCAIS / ANGLAIS
+     ===================================================== */
+
+  var langButton = document.getElementById('lang');
+  var currentLang = 'fr';
+
+  // Lire la langue précédemment choisie
+  try {
+    var savedLang = localStorage.getItem('site-language');
+
+    if (savedLang === 'fr' || savedLang === 'en') {
+      currentLang = savedLang;
+    }
+  } catch (error) {
+    console.warn('Stockage de la langue indisponible.');
+  }
+
+  // Traduire tous les éléments portant data-en
+  function translatePage(lang) {
+    currentLang = lang;
+    document.documentElement.lang = lang;
+
+    var elements = document.querySelectorAll('[data-en]');
+
+    elements.forEach(function (element) {
+
+      // Conserver le texte français original
+      if (!element.hasAttribute('data-fr')) {
+        element.setAttribute('data-fr', element.textContent);
+      }
+
+      var french = element.getAttribute('data-fr');
+      var english = element.getAttribute('data-en');
+
+      element.textContent = lang === 'en' ? english : french;
+    });
+
+    // Modifier le bouton de langue
+    if (langButton) {
+      langButton.textContent = lang === 'fr' ? 'EN' : 'FR';
+
+      langButton.setAttribute(
+        'aria-label',
+        lang === 'fr' ? 'Switch to English' : 'Passer en français'
+      );
+    }
+
+    // Mémoriser le choix
+    try {
+      localStorage.setItem('site-language', lang);
+    } catch (error) {
+      console.warn('Impossible de sauvegarder la langue.');
+    }
+
+    // Actualiser les messages du formulaire si nécessaire
+    updateContactLanguage();
+  }
+
+  // Bouton FR / EN
+  if (langButton) {
+    langButton.addEventListener('click', function () {
+      translatePage(currentLang === 'fr' ? 'en' : 'fr');
+    });
+  }
+
+
+  /* =====================================================
+     2. MENU DE NAVIGATION MOBILE
+     ===================================================== */
+
+  var menuButton = document.getElementById('menu');
+  var navigation = document.getElementById('nav');
+
+  if (menuButton && navigation) {
+
+    menuButton.addEventListener('click', function () {
+
+      var isOpen = navigation.classList.toggle('open');
+
+      menuButton.setAttribute(
+        'aria-expanded',
+        isOpen ? 'true' : 'false'
+      );
+
+      menuButton.textContent = isOpen ? '✕' : '☰';
+    });
+
+    // Fermer le menu après avoir choisi une page
+    navigation.querySelectorAll('a').forEach(function (link) {
+
+      link.addEventListener('click', function () {
+        navigation.classList.remove('open');
+
+        menuButton.setAttribute('aria-expanded', 'false');
+        menuButton.textContent = '☰';
+      });
+
+    });
+
+  }
+
+
+  /* =====================================================
+     3. FORMULAIRE DE CONTACT - FORMSPREE
+     ===================================================== */
+
   var FORMSPREE = 'https://formspree.io/f/xeagpoby';
 
-  var btn = document.getElementById('send');
-  var stt = document.getElementById('st');
+  var sendButton = document.getElementById('send');
+  var statusElement = document.getElementById('st');
 
-  if (!btn) return;
+  var contactStatus = null;
+  var sending = false;
 
-  function isEn() {
-    return document.documentElement.lang === 'en' ||
-      (typeof en !== 'undefined' && !!en);
+  function isEnglish() {
+    return document.documentElement.lang === 'en';
   }
 
-  function say(fr, eng, ok) {
-    if (!stt) return;
-    stt.textContent = isEn() ? eng : fr;
-    stt.className = ok ? 'ok' : 'ko';
+  // Afficher les messages dans la langue choisie
+  function showStatus(fr, en, success) {
+
+    contactStatus = {
+      fr: fr,
+      en: en,
+      success: success
+    };
+
+    updateContactLanguage();
   }
 
-  function setErr(id, fr, eng, bad) {
-    var el = document.getElementById(id);
-    var er = document.getElementById(id + '-e');
+  function updateContactLanguage() {
 
-    if (el) {
-      el.setAttribute('aria-invalid', bad ? 'true' : 'false');
+    if (!statusElement || !contactStatus) {
+      return;
     }
 
-    if (er) {
-      er.textContent = bad ? (isEn() ? eng : fr) : '';
+    statusElement.textContent = isEnglish()
+      ? contactStatus.en
+      : contactStatus.fr;
+
+    statusElement.className = contactStatus.success
+      ? 'ok'
+      : 'ko';
+  }
+
+  // Afficher ou supprimer les erreurs des champs
+  function setError(id, fr, en, invalid) {
+
+    var field = document.getElementById(id);
+    var errorElement = document.getElementById(id + '-e');
+
+    if (field) {
+      field.setAttribute(
+        'aria-invalid',
+        invalid ? 'true' : 'false'
+      );
+    }
+
+    if (errorElement) {
+      errorElement.textContent = invalid
+        ? (isEnglish() ? en : fr)
+        : '';
     }
   }
 
-  function checkForm() {
-    var nm = document.getElementById('nm');
-    var em = document.getElementById('em');
-    var ms = document.getElementById('ms');
-    var cs = document.getElementById('cs');
+  // Vérifier les champs du formulaire
+  function validateForm() {
+
+    var name = document.getElementById('nm');
+    var email = document.getElementById('em');
+    var message = document.getElementById('ms');
+    var consent = document.getElementById('cs');
 
     var valid = true;
 
-    if (!nm || !nm.value.trim()) {
-      setErr('nm', 'Veuillez saisir votre nom.', 'Please enter your name.', true);
+    if (!name || !name.value.trim()) {
+
+      setError(
+        'nm',
+        'Veuillez saisir votre nom.',
+        'Please enter your name.',
+        true
+      );
+
       valid = false;
+
     } else {
-      setErr('nm', '', '', false);
+
+      setError('nm', '', '', false);
     }
 
-    var emailValid = em &&
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.value.trim());
+
+    var emailValid = email &&
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
 
     if (!emailValid) {
-      setErr('em', 'Veuillez saisir une adresse e-mail valide.',
-        'Please enter a valid email address.', true);
+
+      setError(
+        'em',
+        'Veuillez saisir une adresse e-mail valide.',
+        'Please enter a valid email address.',
+        true
+      );
+
       valid = false;
+
     } else {
-      setErr('em', '', '', false);
+
+      setError('em', '', '', false);
     }
 
-    if (!ms || !ms.value.trim()) {
-      setErr('ms', 'Veuillez écrire votre message.',
-        'Please enter your message.', true);
+
+    if (!message || !message.value.trim()) {
+
+      setError(
+        'ms',
+        'Veuillez écrire votre message.',
+        'Please enter your message.',
+        true
+      );
+
       valid = false;
+
     } else {
-      setErr('ms', '', '', false);
+
+      setError('ms', '', '', false);
+    }
+
+
+    // Vérifier le consentement
+    var consentError = document.getElementById('cs-e');
+
+    if (consent && !consent.checked) {
+
+      if (consentError) {
+        consentError.textContent = isEnglish()
+          ? 'Please agree before sending your message.'
+          : 'Veuillez donner votre accord avant l’envoi.';
+      }
+
+      valid = false;
+
+    } else if (consentError) {
+
+      consentError.textContent = '';
     }
 
     return valid;
   }
 
-  btn.addEventListener('click', async function (event) {
-    event.preventDefault();
 
-    if (!checkForm()) {
-      say('Veuillez corriger les champs indiqués.',
-        'Please correct the highlighted fields.', false);
+  // Envoyer le formulaire
+  async function sendContactMessage() {
+
+    if (sending) {
+      return;
+    }
+
+    var name = document.getElementById('nm');
+    var email = document.getElementById('em');
+    var phone = document.getElementById('ph');
+    var subject = document.getElementById('sj');
+    var message = document.getElementById('ms');
+    var consent = document.getElementById('cs');
+    var honeypot = document.getElementById('hp');
+
+    if (!name || !email || !message) {
+      showStatus(
+        'Le formulaire est incomplet.',
+        'The form is incomplete.',
+        false
+      );
+      return;
+    }
+
+    // Protection anti-spam
+    if (honeypot && honeypot.value.trim()) {
+      showStatus(
+        'Impossible de traiter cette demande.',
+        'Unable to process this request.',
+        false
+      );
+      return;
+    }
+
+    if (!validateForm()) {
+
+      showStatus(
+        'Veuillez corriger les champs indiqués.',
+        'Please correct the highlighted fields.',
+        false
+      );
+
       return;
     }
 
     if (!FORMSPREE) {
-      say('Le service de contact n’est pas configuré.',
-        'Contact service is not configured.', false);
+
+      showStatus(
+        'Le service de contact n’est pas configuré.',
+        'The contact service is not configured.',
+        false
+      );
+
       return;
     }
 
-    var nm = document.getElementById('nm');
-    var em = document.getElementById('em');
-    var ms = document.getElementById('ms');
-    var cs = document.getElementById('cs');
+    // Préparer les données
+    var formData = new FormData();
 
-    var data = new FormData();
-    data.append('name', nm.value.trim());
-    data.append('email', em.value.trim());
-    data.append('message', ms.value.trim());
+    formData.append('name', name.value.trim());
+    formData.append('email', email.value.trim());
+    formData.append('_replyto', email.value.trim());
+    formData.append('message', message.value.trim());
 
-    if (cs && cs.value.trim()) {
-      data.append('subject', cs.value.trim());
+    if (phone && phone.value.trim()) {
+      formData.append('phone', phone.value.trim());
     }
 
-    btn.disabled = true;
-    btn.textContent = isEn() ? 'Sending...' : 'Envoi en cours...';
+    if (subject) {
+      formData.append('subject', subject.value);
+      formData.append(
+        '_subject',
+        'Contact - Association de Rumonge Halisi'
+      );
+    }
+
+    formData.append('consent', consent && consent.checked ? 'Oui' : 'Non');
+
+    // Champ anti-spam Formspree
+    formData.append('_gotcha', '');
+
+    sending = true;
+    sendButton.disabled = true;
+
+    sendButton.textContent = isEnglish()
+      ? 'Sending...'
+      : 'Envoi en cours...';
+
+    showStatus(
+      'Envoi de votre message en cours...',
+      'Sending your message...',
+      true
+    );
 
     try {
+
       var response = await fetch(FORMSPREE, {
         method: 'POST',
-        body: data,
+        body: formData,
         headers: {
           'Accept': 'application/json'
         }
       });
 
-      if (!response.ok) {
-        var errorData = await response.json().catch(function () {
-          return {};
-        });
+      var result = await response.json().catch(function () {
+        return {};
+      });
 
-        throw new Error(
-          errorData.errors
-            ? errorData.errors.map(function (e) {
-                return e.message;
-              }).join(', ')
-            : 'Erreur HTTP ' + response.status
-        );
+      if (!response.ok) {
+
+        var errorMessage = result.errors
+          ? result.errors.map(function (error) {
+              return error.message;
+            }).join(', ')
+          : 'HTTP ' + response.status;
+
+        throw new Error(errorMessage);
       }
 
-      say(
-        'Votre message a été envoyé avec succès !',
-        'Your message has been sent successfully!',
+      // Confirmation d'envoi
+      showStatus(
+        'Votre message a été envoyé avec succès ! Merci de nous avoir contactés.',
+        'Your message has been sent successfully! Thank you for contacting us.',
         true
       );
 
-      document.getElementById('nm').value = '';
-      document.getElementById('em').value = '';
-      document.getElementById('ms').value = '';
-      if (cs) cs.value = '';
+      // Vider les champs après succès
+      name.value = '';
+      email.value = '';
+      message.value = '';
+
+      if (phone) phone.value = '';
+
+      if (subject) subject.selectedIndex = 0;
+
+      if (consent) consent.checked = false;
+
+      // Réinitialiser les erreurs
+      ['nm', 'em', 'ms'].forEach(function (id) {
+        setError(id, '', '', false);
+      });
 
     } catch (error) {
-      console.error('Erreur formulaire:', error);
 
-      say(
-        'Échec de l’envoi. Vérifiez votre connexion ou la configuration Formspree.',
-        'Sending failed. Check your connection or Formspree configuration.',
+      console.error('Erreur Formspree :', error);
+
+      showStatus(
+        'Échec de l’envoi. Vérifiez votre connexion et la configuration de Formspree. Réessayez plus tard.',
+        'Message not sent. Please check your connection and Formspree configuration, then try again.',
         false
       );
 
     } finally {
-      btn.disabled = false;
-      btn.textContent = isEn() ? 'Send message' : 'Envoyer le message';
+
+      sending = false;
+      sendButton.disabled = false;
+
+      sendButton.textContent = isEnglish()
+        ? 'Send message'
+        : 'Envoyer le message';
     }
+  }
+
+
+  // Activer le bouton d'envoi
+  if (sendButton) {
+
+    sendButton.addEventListener('click', function (event) {
+
+      event.preventDefault();
+      sendContactMessage();
+
+    });
+
+  }
+
+
+  // Nettoyer les erreurs lorsque l'utilisateur corrige un champ
+  ['nm', 'em', 'ms'].forEach(function (id) {
+
+    var field = document.getElementById(id);
+
+    if (field) {
+
+      field.addEventListener('input', function () {
+        setError(id, '', '', false);
+      });
+
+    }
+
   });
+
+
+  /* =====================================================
+     4. INITIALISATION DU SITE
+     ===================================================== */
+
+  // Appliquer la langue sauvegardée
+  translatePage(currentLang);
+
+  console.log(
+    'Association de Rumonge Halisi : JavaScript chargé correctement.'
+  );
 
 })();
