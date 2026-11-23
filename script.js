@@ -1,12 +1,13 @@
-/* script.js v13 */
+/* script.js v14 */
+/* ===== À REMPLIR : laissez "" pour ce que vous n'avez pas (les icônes vides ne s'affichent pas) ===== */
+/* WHATSAPP : numéro au format international SANS + ni espaces, ex. "25779123456" */
 var EMAIL="rumongehalisiassociation@outlook.com",WHATSAPP="",FACEBOOK="",INSTAGRAM="",TIKTOK="",YOUTUBE="",TELEPHONE="";
-/* Optionnel : lien Formspree (https://formspree.io/f/xxxxxxxx) pour envoyer le formulaire sans ouvrir la messagerie */
+/* Lien Formspree pour envoyer le formulaire sans ouvrir la messagerie */
 var FORMSPREE="https://formspree.io/f/xeagpoby";
 /* Moyens de don affichés sur la page Don. Exemple :
    var DONS=[{t:"Virement bancaire",d:"Banque … – Compte n° … – Intitulé : Association de Rumonge Halisi"},{t:"Mobile money",d:"Lumicash : +257 …"}]; */
 var DONS=[];
 (function(){
-/* ===== EMPÊCHE LA TRADUCTION AUTOMATIQUE DU NAVIGATEUR (le bouton EN/FR du site fait la traduction) ===== */
 document.documentElement.setAttribute('translate','no');
 var mt=document.createElement('meta');mt.name='google';mt.content='notranslate';document.head.appendChild(mt);
 /* ===== LOGOS (SVG intégrés, couleurs d'origine) ===== */
@@ -21,18 +22,19 @@ var ICONS={
 };
 function uri(s){return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s)}
 
-/* ===== RESEAUX SOCIAUX : toujours en couleur, cliquables si le lien est rempli ===== */
-var nets=[['Facebook',FACEBOOK],['Instagram',INSTAGRAM],['TikTok',TIKTOK],['YouTube',YOUTUBE],['WhatsApp',WHATSAPP?'https://wa.me/'+WHATSAPP:'']];
+/* ===== RESEAUX SOCIAUX : seuls les liens renseignés s'affichent (sinon null) ===== */
+var nets=[['Facebook',FACEBOOK],['Instagram',INSTAGRAM],['TikTok',TIKTOK],['YouTube',YOUTUBE],['WhatsApp',WHATSAPP?'https://wa.me/'+WHATSAPP:'']].filter(function(n){return n[1]});
 function social(border){
+ if(!nets.length)return null;
  var w=document.createElement('div');
  w.style.cssText='display:flex;flex-wrap:wrap;gap:12px;align-items:center';
  nets.forEach(function(n){
-  var el=document.createElement(n[1]?'a':'span');
-  if(n[1]){el.href=n[1];el.target='_blank';el.rel='noopener'}
+  var el=document.createElement('a');
+  el.href=n[1];el.target='_blank';el.rel='noopener';
   el.title=n[0];el.setAttribute('aria-label',n[0]);
-  el.style.cssText='display:inline-block!important;width:46px!important;height:46px!important;padding:0!important;margin:0!important;border-radius:50%!important;overflow:hidden!important;background:#fff!important;box-shadow:0 0 0 2px '+border+'!important;opacity:1!important;filter:none!important;line-height:0!important;cursor:'+(n[1]?'pointer':'default');
+  el.style.cssText='display:inline-block!important;width:46px!important;height:46px!important;padding:0!important;margin:0!important;border-radius:50%!important;overflow:hidden!important;background:#fff!important;box-shadow:0 0 0 2px '+border+'!important;opacity:1!important;filter:none!important;line-height:0!important;cursor:pointer';
   var im=document.createElement('img');
-  im.src=uri(ICONS[n[0]]);im.alt=n[0];
+  im.src=uri(ICONS[n[0]]);im.alt='';
   im.style.cssText='display:block!important;width:100%!important;height:100%!important;max-width:none!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important';
   el.appendChild(im);w.appendChild(el);
  });
@@ -56,7 +58,7 @@ st.textContent=
  'footer .nav-urai img{height:20px;width:auto;background:#fff;border-radius:5px;padding:2px 5px}';
 document.head.appendChild(st);
 
-/* ===== ICÔNE URAI DANS LE MENU ET LE PIED DE PAGE (toutes les pages) ===== */
+/* ===== ICÔNE URAI DANS LE MENU ET LE PIED DE PAGE ===== */
 document.querySelectorAll('#nav a[href="urai.html"],footer a[href="urai.html"]').forEach(function(nu){
  if(nu.querySelector('img'))return;
  nu.removeAttribute('data-en');
@@ -85,14 +87,17 @@ if(ft){
   if(/^(Liens rapides|Quick links)$/.test(t))col.classList.add('ql');
   if(/^(Suivez-nous|Follow us)$/.test(t))col.parentNode.removeChild(col);
  });
- var blk=document.createElement('div');blk.id='soc-block';blk.className='fs';
- blk.innerHTML='<h4 data-en="Follow us">Suivez-nous</h4>';
- blk.appendChild(social('#fff'));
- if(fg)fg.appendChild(blk);
- else{var cp=ft.querySelector('.copy');if(cp&&cp.parentNode)cp.parentNode.insertBefore(blk,cp);else ft.appendChild(blk)}
+ var socF=social('#fff');
+ if(socF){
+  var blk=document.createElement('div');blk.id='soc-block';blk.className='fs';
+  blk.innerHTML='<h4 data-en="Follow us">Suivez-nous</h4>';
+  blk.appendChild(socF);
+  if(fg)fg.appendChild(blk);
+  else{var cp=ft.querySelector('.copy');if(cp&&cp.parentNode)cp.parentNode.insertBefore(blk,cp);else ft.appendChild(blk)}
+ }
 }
 
-/* ===== LANGUE FR / EN (via les attributs data-en du HTML) ===== */
+/* ===== LANGUE FR / EN ===== */
 var en=false;try{en=localStorage.getItem('lang')==='en'}catch(x){}
 var els=document.querySelectorAll('[data-en]'),b=document.getElementById('lang'),nav=document.getElementById('nav');
 els.forEach(function(e){e.setAttribute('data-fr',e.textContent)});
@@ -125,20 +130,32 @@ if(document.getElementById('send')||/contact/.test(location.pathname)){
  if(EMAIL)lines.push('✉️ <a href="mailto:'+EMAIL+'">'+EMAIL+'</a>');
  if(TELEPHONE)lines.push('📞 <a href="tel:'+TELEPHONE.replace(/[^+\d]/g,'')+'">'+TELEPHONE+'</a>');
  if(lines.length){var p=document.createElement('p');p.innerHTML=lines.join('<br>');box.appendChild(p)}
- box.appendChild(social('#14701f'));
+ var socC=social('#14701f');if(socC)box.appendChild(socC);
  if(tgt&&tgt.parentNode)tgt.parentNode.insertBefore(box,tgt.nextSibling);
 }
 
 /* ===== FORMULAIRE DE CONTACT ===== */
 var s=document.getElementById('send'),stt=document.getElementById('st');
-function say(fr,eng,err){if(stt){stt.textContent=en?eng:fr;stt.className=err?'err':''}}
+function say(fr,eng,bad){if(stt){stt.textContent=en?eng:fr;stt.className=bad?'ko':'ok'}}
+function ferr(id,fr,eng){
+ var i=document.getElementById(id),e=document.getElementById(id+'-e');
+ if(e)e.textContent=fr?(en?eng:fr):'';
+ if(i){if(fr)i.setAttribute('aria-invalid','true');else i.removeAttribute('aria-invalid')}
+}
+function val(id){var e=document.getElementById(id);return e?e.value.trim():''}
 if(s)s.onclick=function(){
- var nm=document.getElementById('nm').value.trim(),em=document.getElementById('em').value.trim(),sj=document.getElementById('sj').value,ms=document.getElementById('ms').value.trim();
- if(!ms){say('Écrivez votre message avant d’envoyer.','Please write your message first.',1);return}
+ if(val('hp'))return; /* anti-spam : champ piège rempli = robot */
+ var nm=val('nm'),em=val('em'),ph=val('ph'),sj=val('sj'),ms=val('ms'),cs=document.getElementById('cs'),ok=true;
+ if(!nm){ferr('nm','Indiquez votre nom.','Please enter your name.');ok=false}else ferr('nm');
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){ferr('em','Indiquez un email valide.','Please enter a valid email.');ok=false}else ferr('em');
+ if(!ms){ferr('ms','Écrivez votre message.','Please write your message.');ok=false}else ferr('ms');
+ if(cs&&!cs.checked){ferr('cs','Veuillez accepter pour continuer.','Please tick the box to continue.');ok=false}else ferr('cs');
+ if(!ok){say('Vérifiez les champs signalés.','Please check the highlighted fields.',1);return}
+ if(stt){stt.textContent='';stt.className=''}
  if(FORMSPREE){
   s.disabled=true;
-  var data={name:nm||'(sans nom)',message:ms,_subject:'Site Rumonge Halisi – '+sj};
-  if(em)data.email=em;
+  var data={name:nm,email:em,message:ms,_subject:'Site Rumonge Halisi – '+sj};
+  if(ph)data.phone=ph;
   fetch(FORMSPREE,{method:'POST',headers:{'Accept':'application/json','Content-Type':'application/json'},body:JSON.stringify(data)})
   .then(function(r){
    return r.json().catch(function(){return {}}).then(function(d){
@@ -146,16 +163,16 @@ if(s)s.onclick=function(){
      var m=(d&&d.errors&&d.errors.map(function(x){return x.message}).join(' '))||(d&&d.error)||('HTTP '+r.status);
      throw new Error(m);
     }
-    say('Merci, votre message est envoyé.','Thank you, your message has been sent.');
-    document.getElementById('ms').value='';
+    say('Merci, votre message est envoyé. Nous vous répondrons bientôt.','Thank you, your message has been sent. We will reply soon.');
+    document.getElementById('ms').value='';if(cs)cs.checked=false;
    });
   })
-  .catch(function(er){say('Envoi impossible ('+((er&&er.message)||er)+'). Réessayez ou écrivez-nous directement.','Could not send ('+((er&&er.message)||er)+'). Try again or write to us directly.',1)})
+  .catch(function(er){say('Envoi impossible ('+((er&&er.message)||er)+'). Réessayez ou écrivez-nous directement par email.','Could not send ('+((er&&er.message)||er)+'). Try again or email us directly.',1)})
   .then(function(){s.disabled=false});
   return;
  }
- var body=ms+(nm||em?'\n\n'+nm+(em?' <'+em+'>':''):'');
- if(EMAIL){location.href='mailto:'+EMAIL+'?subject='+encodeURIComponent(sj+(nm?' – '+nm:''))+'&body='+encodeURIComponent(body);return}
+ var body=ms+'\n\n'+nm+' <'+em+'>'+(ph?'\n'+ph:'');
+ if(EMAIL){location.href='mailto:'+EMAIL+'?subject='+encodeURIComponent(sj+' – '+nm)+'&body='+encodeURIComponent(body);return}
  if(WHATSAPP){window.open('https://wa.me/'+WHATSAPP+'?text='+encodeURIComponent(sj+' : '+body),'_blank','noopener');return}
  say('Le formulaire n’est pas encore configuré.','The form is not configured yet.',1);
 };
