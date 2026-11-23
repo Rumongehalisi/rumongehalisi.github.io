@@ -1,4 +1,4 @@
-/* script.js v9 */
+/* script.js v10 */
 var EMAIL="rumongehalisiassociation@outlook.com",WHATSAPP="",FACEBOOK="",INSTAGRAM="",TIKTOK="",YOUTUBE="",TELEPHONE="";
 /* Optionnel : lien Formspree (https://formspree.io/f/xxxxxxxx) pour envoyer le formulaire sans ouvrir la messagerie */
 var FORMSPREE="";
@@ -49,8 +49,20 @@ st.textContent=
  'footer .fg>.ql h4{flex:0 0 100%;margin:0 0 2px}'+
  'footer .fg>.ql a{display:inline-block!important;padding:0!important;margin:0!important}'+
  '#soc-block h4{margin:0 0 12px}'+
- '.contact-coords{margin:14px 0}';
+ '.contact-coords{margin:14px 0}'+
+ '.nav-urai{display:inline-flex;align-items:center;gap:.35rem}'+
+ '.nav-urai img{height:16px;width:auto}';
 document.head.appendChild(st);
+
+/* ===== ICÔNE URAI DANS LE MENU (toutes les pages) ===== */
+var nu=document.querySelector('#nav a[href="urai.html"]');
+if(nu&&!nu.querySelector('img')){
+ nu.removeAttribute('data-en');
+ nu.classList.add('nav-urai');
+ var ui=document.createElement('img');
+ ui.src='urai-icon.webp';ui.alt='';ui.width=42;ui.height=16;
+ nu.insertBefore(ui,nu.firstChild);
+}
 
 /* ===== BARRE DU HAUT : on retire la zone des coordonnées ===== */
 document.querySelectorAll('.top .coords').forEach(function(e){e.parentNode.removeChild(e)});
