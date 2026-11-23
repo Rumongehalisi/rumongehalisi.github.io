@@ -1,12 +1,28 @@
-/* script.js v14 */
-/* ===== À REMPLIR : laissez "" pour ce que vous n'avez pas (les icônes vides ne s'affichent pas) ===== */
-/* WHATSAPP : numéro au format international SANS + ni espaces, ex. "25779123456" */
-var EMAIL="rumongehalisiassociation@outlook.com",WHATSAPP="",FACEBOOK="",INSTAGRAM="",TIKTOK="",YOUTUBE="",TELEPHONE="";
-/* Lien Formspree pour envoyer le formulaire sans ouvrir la messagerie */
+/* script.js v15 */
+/* =====================================================================
+   À REMPLIR UNIQUEMENT ICI (lignes 1 à 25). Ne touchez pas au reste.
+   - Laissez "" pour ce que vous n'avez pas : rien ne s'affichera.
+   - WHATSAPP : numéro international SANS "+" ni espaces, ex. "25779123456"
+   - FACEBOOK, INSTAGRAM, TIKTOK, YOUTUBE : lien complet (https://...)
+   - TELEPHONE : tel qu'il doit s'afficher, ex. "+257 79 12 34 56"
+   ===================================================================== */
+var EMAIL="rumongehalisiassociation@outlook.com";
+var WHATSAPP="";
+var FACEBOOK="";
+var INSTAGRAM="";
+var TIKTOK="";
+var YOUTUBE="";
+var TELEPHONE="";
+/* Lien Formspree : envoi du formulaire de contact */
 var FORMSPREE="https://formspree.io/f/xeagpoby";
-/* Moyens de don affichés sur la page Don. Exemple :
-   var DONS=[{t:"Virement bancaire",d:"Banque … – Compte n° … – Intitulé : Association de Rumonge Halisi"},{t:"Mobile money",d:"Lumicash : +257 …"}]; */
-var DONS=[];
+/* Moyens de don (page Don). Chaque ligne : t = titre, d = détail, te / de = version anglaise.
+   Exemple à ajouter (ne mettez que des informations RÉELLES) :
+   {t:"Mobile money (Lumicash)",d:"+257 79 12 34 56 – Nom : Association de Rumonge Halisi",te:"Mobile money (Lumicash)",de:"+257 79 12 34 56 – Name: Association de Rumonge Halisi"}, */
+var DONS=[
+ {t:"Obtenir les coordonnées de paiement",d:"Écrivez-nous via la page Contact ou par e-mail à "+EMAIL+" : nous vous indiquerons les moyens de paiement disponibles (mobile money, banque, depuis l’étranger).",te:"Get the payment details",de:"Write to us via the Contact page or by email at "+EMAIL+": we will tell you the payment options available (mobile money, bank, from abroad)."}
+];
+/* ===================== FIN DE LA ZONE À REMPLIR ===================== */
+
 (function(){
 document.documentElement.setAttribute('translate','no');
 var mt=document.createElement('meta');mt.name='google';mt.content='notranslate';document.head.appendChild(mt);
@@ -22,7 +38,7 @@ var ICONS={
 };
 function uri(s){return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s)}
 
-/* ===== RESEAUX SOCIAUX : seuls les liens renseignés s'affichent (sinon null) ===== */
+/* ===== RESEAUX SOCIAUX : seuls les liens renseignés s'affichent ===== */
 var nets=[['Facebook',FACEBOOK],['Instagram',INSTAGRAM],['TikTok',TIKTOK],['YouTube',YOUTUBE],['WhatsApp',WHATSAPP?'https://wa.me/'+WHATSAPP:'']].filter(function(n){return n[1]});
 function social(border){
  if(!nets.length)return null;
@@ -95,6 +111,20 @@ if(ft){
   if(fg)fg.appendChild(blk);
   else{var cp=ft.querySelector('.copy');if(cp&&cp.parentNode)cp.parentNode.insertBefore(blk,cp);else ft.appendChild(blk)}
  }
+}
+
+/* ===== PAGE DON : moyens de paiement (avant la langue pour être traduits) ===== */
+var dm=document.getElementById('donmethods');
+if(dm&&DONS.length){
+ DONS.forEach(function(x){
+  var d=document.createElement('div'),h=document.createElement('h3'),q=document.createElement('p');
+  d.className='card';
+  h.textContent=x.t;q.textContent=x.d;
+  if(x.te)h.setAttribute('data-en',x.te);
+  if(x.de)q.setAttribute('data-en',x.de);
+  d.appendChild(h);d.appendChild(q);dm.appendChild(d);
+ });
+ var fb=document.getElementById('donfallback');if(fb)fb.hidden=true;
 }
 
 /* ===== LANGUE FR / EN ===== */
@@ -176,14 +206,4 @@ if(s)s.onclick=function(){
  if(WHATSAPP){window.open('https://wa.me/'+WHATSAPP+'?text='+encodeURIComponent(sj+' : '+body),'_blank','noopener');return}
  say('Le formulaire n’est pas encore configuré.','The form is not configured yet.',1);
 };
-
-/* ===== PAGE DON : moyens de paiement ===== */
-var dm=document.getElementById('donmethods');
-if(dm&&DONS.length){
- DONS.forEach(function(x){
-  var d=document.createElement('div'),h=document.createElement('h3'),q=document.createElement('p');
-  d.className='card';h.textContent=x.t;q.textContent=x.d;d.appendChild(h);d.appendChild(q);dm.appendChild(d);
- });
- var fb=document.getElementById('donfallback');if(fb)fb.hidden=true;
-}
 })();
