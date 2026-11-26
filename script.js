@@ -71,6 +71,9 @@ st.textContent=
  'footer .fg>.ql h4{flex:0 0 100%;margin:0 0 2px}'+
  'footer .fg>.ql a{display:inline-block!important;padding:0!important;margin:0!important}'+
  '#soc-block h4{margin:0 0 12px}'+
+ '#soc-block a[target],.contact-coords a[target]{transition:transform .15s ease}'+
+ '#soc-block a[target]:hover,.contact-coords a[target]:hover,#soc-block a[target]:focus-visible{transform:scale(1.12)}'+
+ '@media(prefers-reduced-motion:reduce){#soc-block a[target],.contact-coords a[target]{transition:none}#soc-block a[target]:hover,.contact-coords a[target]:hover{transform:none}}'+
  '.contact-coords{margin:14px 0}'+
  '.nav-urai{display:inline-flex;align-items:center;gap:.35rem}'+
  '.nav-urai img{height:16px;width:auto}'+
@@ -84,7 +87,7 @@ document.querySelectorAll('#nav a[href="urai.html"],footer a[href="urai.html"]')
  nu.removeAttribute('data-en');
  nu.classList.add('nav-urai');
  var ui=document.createElement('img');
- ui.src='urai-icon.webp';ui.alt='';ui.width=42;ui.height=16;
+ ui.src='/urai-icon.webp';ui.alt='';ui.width=42;ui.height=16;
  nu.insertBefore(ui,nu.firstChild);
 });
 
@@ -138,6 +141,10 @@ if(dm&&DONS.length){
  var fb=document.getElementById('donfallback');if(fb)fb.hidden=true;
 }
 
+/* ===== PAGE DON : bouton e-mail ===== */
+var dmb=document.getElementById('donmailbtn');
+if(dmb&&EMAIL)dmb.href='mailto:'+EMAIL+'?subject='+encodeURIComponent('Don – Association de Rumonge Halisi');
+
 /* ===== LANGUE FR / EN ===== */
 var en=false;try{en=localStorage.getItem('lang')==='en'}catch(x){}
 var els=document.querySelectorAll('[data-en]'),b=document.getElementById('lang'),nav=document.getElementById('nav');
@@ -150,6 +157,11 @@ function ap(){
 }
 if(b)b.onclick=function(){en=!en;try{localStorage.setItem('lang',en?'en':'fr')}catch(x){}ap()};
 if(en)ap();
+
+/* ===== PAGE ACTIVE DANS LE MENU ===== */
+(function(){var cur=location.pathname.split('/').pop()||'index.html';
+ document.querySelectorAll('#nav a:not(.btn)').forEach(function(a){
+  if(a.getAttribute('href')===cur){a.classList.add('on');a.setAttribute('aria-current','page')}});})();
 
 /* ===== MENU MOBILE ===== */
 var mn=document.getElementById('menu');
