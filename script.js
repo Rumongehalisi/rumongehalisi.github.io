@@ -10,7 +10,7 @@ var EMAIL="rumongehalisiassociation@outlook.com";
 var WHATSAPP="";
 var FACEBOOK="";
 var INSTAGRAM="https://www.instagram.com/rumongehalisiassociation";
-var TIKTOK="";
+var TIKTOK="https://www.tiktok.com/@rumonge.halisi";
 var YOUTUBE="";
 var TELEPHONE="";
 /* true = les 5 icônes s'affichent toujours (celles sans lien sont grisées au clic) ; false = seulement celles avec un lien */
