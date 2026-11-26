@@ -9,7 +9,7 @@
 var EMAIL="rumongehalisiassociation@outlook.com";
 var WHATSAPP="";
 var FACEBOOK="";
-var INSTAGRAM="";
+var INSTAGRAM="https://www.instagram.com/rumongehalisiassociation";
 var TIKTOK="";
 var YOUTUBE="";
 var TELEPHONE="";
