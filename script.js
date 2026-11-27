@@ -12,7 +12,7 @@ var FACEBOOK="https://www.facebook.com/profile.php?id=61596830857911";
 var INSTAGRAM="https://www.instagram.com/rumongehalisiassociation";
 var TIKTOK="https://www.tiktok.com/@rumonge.halisi";
 var YOUTUBE="https://www.youtube.com/@RumongeHalisi";
-var TWITTER="";   /* X (Twitter) : lien complet, ex. https://x.com/votrecompte */
+var TWITTER="https://x.com/RumongeHalisi";
 var PINTEREST="";  /* Pinterest : lien complet, ex. https://www.pinterest.com/votrecompte */
 var TELEPHONE="";
 /* true = les 5 icônes s'affichent toujours (celles sans lien sont grisées au clic) ; false = seulement celles avec un lien */
