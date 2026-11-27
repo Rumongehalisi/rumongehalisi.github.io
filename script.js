@@ -12,6 +12,8 @@ var FACEBOOK="https://www.facebook.com/profile.php?id=61596830857911";
 var INSTAGRAM="https://www.instagram.com/rumongehalisiassociation";
 var TIKTOK="https://www.tiktok.com/@rumonge.halisi";
 var YOUTUBE="https://www.youtube.com/@RumongeHalisi";
+var TWITTER="";   /* X (Twitter) : lien complet, ex. https://x.com/votrecompte */
+var PINTEREST="";  /* Pinterest : lien complet, ex. https://www.pinterest.com/votrecompte */
 var TELEPHONE="";
 /* true = les 5 icônes s'affichent toujours (celles sans lien sont grisées au clic) ; false = seulement celles avec un lien */
 var SHOW_EMPTY=true;
@@ -39,12 +41,14 @@ var ICONS={
  'TikTok':H+'<circle cx="12" cy="12" r="12" fill="#000"/><g transform="translate(3.6 3.6) scale(.7)"><path transform="translate(-.7 -.7)" fill="#25F4EE" d="'+TT+'"/><path transform="translate(.7 .7)" fill="#FE2C55" d="'+TT+'"/><path fill="#fff" d="'+TT+'"/></g></svg>',
  'YouTube':H+'<circle cx="12" cy="12" r="12" fill="#FF0000"/><path fill="#fff" d="M9.6 7.8v8.4l7-4.2z"/></svg>',
  'Email':H+'<circle cx="12" cy="12" r="12" fill="#14701F"/><rect x="5.6" y="7.6" width="12.8" height="8.8" rx="1.6" fill="none" stroke="#fff" stroke-width="1.5"/><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linejoin="round" d="M6 8.6l6 4.6 6-4.6"/></svg>',
+ 'X':H+'<circle cx=\"12\" cy=\"12\" r=\"12\" fill=\"#000\"/><path transform=\"translate(5.2 5.2) scale(.57)\" fill=\"#fff\" d=\"M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z\"/></svg>',
+ 'Pinterest':H+'<path fill=\"#E60023\" d=\"M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12.017 24c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001 12.017.001z\"/></svg>',
  'WhatsApp':H+'<circle cx="12" cy="12" r="12" fill="#25D366"/><path fill="none" stroke="#fff" stroke-width="1.6" stroke-linejoin="round" d="M12 5.2a6.8 6.8 0 0 0-5.8 10.3L5.3 18.7l3.3-.9A6.8 6.8 0 1 0 12 5.2z"/><path fill="#fff" d="M9.5 8.7c.2-.4.5-.4.7-.4h.5c.2 0 .4.1.5.4l.7 1.6c.1.2 0 .4-.1.6l-.4.5c-.1.1-.1.3 0 .4.5.9 1.3 1.6 2.3 2.1.1.1.3 0 .4-.1l.5-.6c.1-.2.3-.2.5-.1l1.6.8c.2.1.3.3.2.5-.1.9-.9 1.6-1.9 1.6-3 0-5.7-2.6-5.7-5.7 0-.5.2-1.2.4-1.6z"/></svg>'
 };
 function uri(s){return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s)}
 
 /* ===== RESEAUX SOCIAUX : seuls les liens renseignés s'affichent ===== */
-var nets=[['Facebook',FACEBOOK],['Instagram',INSTAGRAM],['TikTok',TIKTOK],['YouTube',YOUTUBE],['WhatsApp',WHATSAPP?'https://wa.me/'+WHATSAPP:''],['Email',EMAIL?'mailto:'+EMAIL:'']].filter(function(n){return SHOW_EMPTY||n[1]});
+var nets=[['Facebook',FACEBOOK],['Instagram',INSTAGRAM],['TikTok',TIKTOK],['YouTube',YOUTUBE],['X',TWITTER],['Pinterest',PINTEREST],['WhatsApp',WHATSAPP?'https://wa.me/'+WHATSAPP:''],['Email',EMAIL?'mailto:'+EMAIL:'']].filter(function(n){return SHOW_EMPTY||n[1]});
 function social(border){
  if(!nets.length)return null;
  var w=document.createElement('div');
