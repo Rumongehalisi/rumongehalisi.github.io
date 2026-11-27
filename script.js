@@ -1,4 +1,4 @@
-/* script.js v17 */
+/* script.js v18 – pages FR à la racine, pages EN dans /en/ (langue = attribut lang de <html>) */
 /* =====================================================================
    À REMPLIR UNIQUEMENT ICI (lignes 1 à 25). Ne touchez pas au reste.
    - Laissez "" pour ce que vous n'avez pas : rien ne s'affichera.
@@ -30,6 +30,7 @@ var DONS=[
 /* ===================== FIN DE LA ZONE À REMPLIR ===================== */
 
 (function(){
+var EN=document.documentElement.lang==='en';
 document.documentElement.setAttribute('translate','no');
 var mt=document.createElement('meta');mt.name='google';mt.content='notranslate';document.head.appendChild(mt);
 /* ===== LOGOS (SVG intégrés, couleurs d'origine) ===== */
@@ -56,7 +57,7 @@ function social(border){
  nets.forEach(function(n){
   var el=document.createElement(n[1]?'a':'span');
   if(n[1]){el.href=n[1];el.target=n[0]==='Email'?'_self':'_blank';el.rel='noopener'}
-  el.title=n[0]==='Email'&&EMAIL?EMAIL:n[0]+(n[1]?'':' – bientôt');el.setAttribute('aria-label',n[0]);
+  el.title=n[0]==='Email'&&EMAIL?EMAIL:n[0]+(n[1]?'':(EN?' – coming soon':' – bientôt'));el.setAttribute('aria-label',n[0]);
   el.style.cssText='display:inline-block!important;width:46px!important;height:46px!important;padding:0!important;margin:0!important;border-radius:50%!important;overflow:hidden!important;background:#fff!important;box-shadow:0 0 0 2px '+border+'!important;opacity:1!important;filter:none!important;line-height:0!important;cursor:'+(n[1]?'pointer':'default');
   var im=document.createElement('img');
   im.src=uri(ICONS[n[0]]);im.alt='';
@@ -148,19 +149,17 @@ if(dm&&DONS.length){
 
 /* ===== PAGE DON : bouton e-mail ===== */
 var dmb=document.getElementById('donmailbtn');
-if(dmb&&EMAIL)dmb.href='mailto:'+EMAIL+'?subject='+encodeURIComponent('Don – Association de Rumonge Halisi');
+if(dmb&&EMAIL)dmb.href='mailto:'+EMAIL+'?subject='+encodeURIComponent(EN?'Donation – Rumonge Halisi Association':'Don – Association de Rumonge Halisi');
 
 /* ===== LANGUE FR / EN ===== */
-var en=false;try{en=localStorage.getItem('lang')==='en'}catch(x){}
+var en=EN;
 var els=document.querySelectorAll('[data-en]'),b=document.getElementById('lang'),nav=document.getElementById('nav');
 els.forEach(function(e){e.setAttribute('data-fr',e.textContent)});
 function ap(){
  els.forEach(function(e){e.textContent=e.getAttribute(en?'data-en':'data-fr')});
  if(addr)addr.innerHTML=en?ADDR_EN:addrFR;
  document.documentElement.lang=en?'en':'fr';
- if(b){b.textContent=en?'FR':'EN';b.setAttribute('aria-label',en?'Passer en français':'Switch to English')}
-}
-if(b)b.onclick=function(){en=!en;try{localStorage.setItem('lang',en?'en':'fr')}catch(x){}ap()};
+ }
 if(en)ap();
 
 /* ===== PAGE ACTIVE DANS LE MENU ===== */
