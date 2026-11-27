@@ -38,20 +38,21 @@ var ICONS={
  'Instagram':H+'<defs><linearGradient id="g" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#FEDA75"/><stop offset=".35" stop-color="#FA7E1E"/><stop offset=".6" stop-color="#D62976"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><circle cx="12" cy="12" r="12" fill="url(#g)"/><rect x="6.2" y="6.2" width="11.6" height="11.6" rx="3.4" fill="none" stroke="#fff" stroke-width="1.6"/><circle cx="12" cy="12" r="2.9" fill="none" stroke="#fff" stroke-width="1.6"/><circle cx="15.7" cy="8.3" r=".9" fill="#fff"/></svg>',
  'TikTok':H+'<circle cx="12" cy="12" r="12" fill="#000"/><g transform="translate(3.6 3.6) scale(.7)"><path transform="translate(-.7 -.7)" fill="#25F4EE" d="'+TT+'"/><path transform="translate(.7 .7)" fill="#FE2C55" d="'+TT+'"/><path fill="#fff" d="'+TT+'"/></g></svg>',
  'YouTube':H+'<circle cx="12" cy="12" r="12" fill="#FF0000"/><path fill="#fff" d="M9.6 7.8v8.4l7-4.2z"/></svg>',
+ 'Email':H+'<circle cx="12" cy="12" r="12" fill="#14701F"/><rect x="5.6" y="7.6" width="12.8" height="8.8" rx="1.6" fill="none" stroke="#fff" stroke-width="1.5"/><path fill="none" stroke="#fff" stroke-width="1.5" stroke-linejoin="round" d="M6 8.6l6 4.6 6-4.6"/></svg>',
  'WhatsApp':H+'<circle cx="12" cy="12" r="12" fill="#25D366"/><path fill="none" stroke="#fff" stroke-width="1.6" stroke-linejoin="round" d="M12 5.2a6.8 6.8 0 0 0-5.8 10.3L5.3 18.7l3.3-.9A6.8 6.8 0 1 0 12 5.2z"/><path fill="#fff" d="M9.5 8.7c.2-.4.5-.4.7-.4h.5c.2 0 .4.1.5.4l.7 1.6c.1.2 0 .4-.1.6l-.4.5c-.1.1-.1.3 0 .4.5.9 1.3 1.6 2.3 2.1.1.1.3 0 .4-.1l.5-.6c.1-.2.3-.2.5-.1l1.6.8c.2.1.3.3.2.5-.1.9-.9 1.6-1.9 1.6-3 0-5.7-2.6-5.7-5.7 0-.5.2-1.2.4-1.6z"/></svg>'
 };
 function uri(s){return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s)}
 
 /* ===== RESEAUX SOCIAUX : seuls les liens renseignés s'affichent ===== */
-var nets=[['Facebook',FACEBOOK],['Instagram',INSTAGRAM],['TikTok',TIKTOK],['YouTube',YOUTUBE],['WhatsApp',WHATSAPP?'https://wa.me/'+WHATSAPP:'']].filter(function(n){return SHOW_EMPTY||n[1]});
+var nets=[['Facebook',FACEBOOK],['Instagram',INSTAGRAM],['TikTok',TIKTOK],['YouTube',YOUTUBE],['WhatsApp',WHATSAPP?'https://wa.me/'+WHATSAPP:''],['Email',EMAIL?'mailto:'+EMAIL:'']].filter(function(n){return SHOW_EMPTY||n[1]});
 function social(border){
  if(!nets.length)return null;
  var w=document.createElement('div');
  w.style.cssText='display:flex;flex-wrap:wrap;gap:12px;align-items:center';
  nets.forEach(function(n){
   var el=document.createElement(n[1]?'a':'span');
-  if(n[1]){el.href=n[1];el.target='_blank';el.rel='noopener'}
-  el.title=n[0]+(n[1]?'':' – bientôt');el.setAttribute('aria-label',n[0]);
+  if(n[1]){el.href=n[1];el.target=n[0]==='Email'?'_self':'_blank';el.rel='noopener'}
+  el.title=n[0]==='Email'&&EMAIL?EMAIL:n[0]+(n[1]?'':' – bientôt');el.setAttribute('aria-label',n[0]);
   el.style.cssText='display:inline-block!important;width:46px!important;height:46px!important;padding:0!important;margin:0!important;border-radius:50%!important;overflow:hidden!important;background:#fff!important;box-shadow:0 0 0 2px '+border+'!important;opacity:1!important;filter:none!important;line-height:0!important;cursor:'+(n[1]?'pointer':'default');
   var im=document.createElement('img');
   im.src=uri(ICONS[n[0]]);im.alt='';
@@ -180,7 +181,7 @@ if(document.getElementById('send')||/contact/.test(location.pathname)){
  });
  var box=document.createElement('div');box.className='contact-coords';
  var lines=[];
- if(EMAIL)lines.push('✉️ <a href="mailto:'+EMAIL+'">'+EMAIL+'</a>');
+ if(EMAIL)lines.push('<img src="'+uri(ICONS['Email'])+'" alt="" width="28" height="28" style="vertical-align:middle;margin-right:8px;border-radius:50%"><a href="mailto:'+EMAIL+'">'+EMAIL+'</a>');
  if(TELEPHONE)lines.push('📞 <a href="tel:'+TELEPHONE.replace(/[^+\d]/g,'')+'">'+TELEPHONE+'</a>');
  if(lines.length){var p=document.createElement('p');p.innerHTML=lines.join('<br>');box.appendChild(p)}
  var socC=social('#14701f');if(socC)box.appendChild(socC);
