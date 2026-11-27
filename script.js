@@ -88,7 +88,7 @@ st.textContent=
 document.head.appendChild(st);
 
 /* ===== ICÔNE URAI DANS LE MENU ET LE PIED DE PAGE ===== */
-document.querySelectorAll('#nav a[href="urai.html"],footer a[href="urai.html"]').forEach(function(nu){
+document.querySelectorAll('#nav a[href="urai.html"],footer a[href="urai.html"],#nav a[href="en-urai.html"],footer a[href="en-urai.html"]').forEach(function(nu){
  if(nu.querySelector('img'))return;
  nu.removeAttribute('data-en');
  nu.classList.add('nav-urai');
