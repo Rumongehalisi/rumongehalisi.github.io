@@ -44,3 +44,8 @@ button.btn:disabled{opacity:.6;cursor:wait}
 @media(max-width:600px){section{padding:36px 0}.stats{grid-template-columns:1fr}.top .wrap{font-size:12px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 @media(prefers-color-scheme:dark){#st.ko{color:#ff8a80}}
+
+footer a.fb{display:inline-flex;align-items:center;gap:8px;padding:6px 0;transition:transform .2s,color .2s}
+footer a.fb svg{flex:none;transition:transform .2s}
+footer a.fb:hover svg,footer a.fb:focus-visible svg{transform:scale(1.15)}
+footer a.fb:hover{color:#4c8ef7}
