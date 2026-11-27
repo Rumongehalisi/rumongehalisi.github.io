@@ -181,7 +181,7 @@ if(document.getElementById('send')||/contact/.test(location.pathname)){
  });
  var box=document.createElement('div');box.className='contact-coords';
  var lines=[];
- if(EMAIL)lines.push('<img src="'+uri(ICONS['Email'])+'" alt="" width="28" height="28" style="vertical-align:middle;margin-right:8px;border-radius:50%"><a href="mailto:'+EMAIL+'">'+EMAIL+'</a>');
+ /* e-mail : affiché uniquement via l'icône ronde (réseaux) */
  if(TELEPHONE)lines.push('📞 <a href="tel:'+TELEPHONE.replace(/[^+\d]/g,'')+'">'+TELEPHONE+'</a>');
  if(lines.length){var p=document.createElement('p');p.innerHTML=lines.join('<br>');box.appendChild(p)}
  var socC=social('#14701f');if(socC)box.appendChild(socC);
