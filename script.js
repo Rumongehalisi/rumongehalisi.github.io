@@ -1,4 +1,4 @@
-/* script.js v18 – pages FR à la racine, pages EN dans /en/ (langue = attribut lang de <html>) */
+/* script.js v19 – pages FR (index.html), EN (en-*.html), SW (sw-*.html) ; la langue = attribut lang de <html> */
 /* =====================================================================
    À REMPLIR UNIQUEMENT ICI (lignes 1 à 25). Ne touchez pas au reste.
    - Laissez "" pour ce que vous n'avez pas : rien ne s'affichera.
@@ -24,13 +24,13 @@ var FORMSPREE="https://formspree.io/f/xeagpoby";
    d:"Numéro : +257 79 00 00 00 – Nom : Association de Rumonge Halisi"
    N'écrivez que des informations RÉELLES. */
 var DONS=[
- {i:"mobile",t:"Lumicash (mobile money)",d:"Le numéro de paiement est communiqué sur demande : écrivez-nous via la page Contact ou par e-mail à "+EMAIL+".",te:"Lumicash (mobile money)",de:"The payment number is provided on request: write to us via the Contact page or by email at "+EMAIL+"."},
- {i:"bank",t:"Virement bancaire",d:"Les coordonnées bancaires sont communiquées sur demande : écrivez-nous via la page Contact ou par e-mail à "+EMAIL+".",te:"Bank transfer",de:"The bank details are provided on request: write to us via the Contact page or by email at "+EMAIL+"."}
+ {i:"mobile",t:"Lumicash (mobile money)",d:"Le numéro de paiement est communiqué sur demande : écrivez-nous via la page Contact ou par e-mail à "+EMAIL+".",te:"Lumicash (mobile money)",de:"The payment number is provided on request: write to us via the Contact page or by email at "+EMAIL+".",ts:"Lumicash (mobile money)",ds:"Namba ya malipo hutolewa kwa ombi: tuandikie kupitia ukurasa wa Mawasiliano au kwa barua pepe kwa "+EMAIL+"."},
+ {i:"bank",t:"Virement bancaire",d:"Les coordonnées bancaires sont communiquées sur demande : écrivez-nous via la page Contact ou par e-mail à "+EMAIL+".",te:"Bank transfer",de:"The bank details are provided on request: write to us via the Contact page or by email at "+EMAIL+".",ts:"Uhamisho wa benki",ds:"Maelezo ya benki hutolewa kwa ombi: tuandikie kupitia ukurasa wa Mawasiliano au kwa barua pepe kwa "+EMAIL+"."}
 ];
 /* ===================== FIN DE LA ZONE À REMPLIR ===================== */
 
 (function(){
-var EN=document.documentElement.lang==='en';
+var LG=document.documentElement.lang,EN=LG==='en',SW=LG==='sw';
 document.documentElement.setAttribute('translate','no');
 var mt=document.createElement('meta');mt.name='google';mt.content='notranslate';document.head.appendChild(mt);
 /* ===== LOGOS (SVG intégrés, couleurs d'origine) ===== */
@@ -57,7 +57,7 @@ function social(border){
  nets.forEach(function(n){
   var el=document.createElement(n[1]?'a':'span');
   if(n[1]){el.href=n[1];el.target=n[0]==='Email'?'_self':'_blank';el.rel='noopener'}
-  el.title=n[0]==='Email'&&EMAIL?EMAIL:n[0]+(n[1]?'':(EN?' – coming soon':' – bientôt'));el.setAttribute('aria-label',n[0]);
+  el.title=n[0]==='Email'&&EMAIL?EMAIL:n[0]+(n[1]?'':(SW?' – inakuja hivi karibuni':EN?' – coming soon':' – bientôt'));el.setAttribute('aria-label',n[0]);
   el.style.cssText='display:inline-block!important;width:46px!important;height:46px!important;padding:0!important;margin:0!important;border-radius:50%!important;overflow:hidden!important;background:#fff!important;box-shadow:0 0 0 2px '+border+'!important;opacity:1!important;filter:none!important;line-height:0!important;cursor:'+(n[1]?'pointer':'default');
   var im=document.createElement('img');
   im.src=uri(ICONS[n[0]]);im.alt='';
@@ -88,7 +88,7 @@ st.textContent=
 document.head.appendChild(st);
 
 /* ===== ICÔNE URAI DANS LE MENU ET LE PIED DE PAGE ===== */
-document.querySelectorAll('#nav a[href="urai.html"],footer a[href="urai.html"],#nav a[href="en-urai.html"],footer a[href="en-urai.html"]').forEach(function(nu){
+document.querySelectorAll('#nav a[href$="urai.html"],footer a[href$="urai.html"]').forEach(function(nu){
  if(nu.querySelector('img'))return;
  nu.removeAttribute('data-en');
  nu.classList.add('nav-urai');
@@ -101,7 +101,7 @@ document.querySelectorAll('#nav a[href="urai.html"],footer a[href="urai.html"],#
 document.querySelectorAll('.top .coords').forEach(function(e){e.parentNode.removeChild(e)});
 
 /* ===== PIED DE PAGE ===== */
-var addr=null,addrFR='',ADDR_EN='RUMONGE HALISI ASSOCIATION – non-profit association<br>Centre Urbain Hill, Zone, Commune and Province of Rumonge, Burundi';
+var addr=null,addrFR='',ADDR_EN='RUMONGE HALISI ASSOCIATION – non-profit association<br>Centre Urbain Hill, Zone, Commune and Province of Rumonge, Burundi',ADDR_SW='CHAMA CHA RUMONGE HALISI – chama kisichotafuta faida<br>Kilima cha Centre Urbain, Zone, Commune na Mkoa wa Rumonge, Burundi';
 var ft=document.querySelector('footer');
 if(ft){
  var fg=ft.querySelector('.fg');
@@ -113,13 +113,13 @@ if(ft){
  ft.querySelectorAll('h2,h3,h4,h5').forEach(function(h){
   var t=h.textContent.trim(),col=h.parentNode;
   if(!col||col===ft||col===fg)return;
-  if(/^(Liens rapides|Quick links)$/.test(t))col.classList.add('ql');
-  if(/^(Suivez-nous|Follow us)$/.test(t))col.parentNode.removeChild(col);
+  if(/^(Liens rapides|Quick links|Viungo vya haraka)$/.test(t))col.classList.add('ql');
+  if(/^(Suivez-nous|Follow us|Tufuate)$/.test(t))col.parentNode.removeChild(col);
  });
  var socF=social('#fff');
  if(socF){
   var blk=document.createElement('div');blk.id='soc-block';blk.className='fs';
-  blk.innerHTML='<h4 data-en="Follow us">Suivez-nous</h4>';
+  blk.innerHTML='<h4 data-en="Follow us" data-sw="Tufuate">Suivez-nous</h4>';
   blk.appendChild(socF);
   if(fg)fg.appendChild(blk);
   else{var cp=ft.querySelector('.copy');if(cp&&cp.parentNode)cp.parentNode.insertBefore(blk,cp);else ft.appendChild(blk)}
@@ -141,7 +141,9 @@ if(dm&&DONS.length){
   if(x.i&&PAY[x.i]){var pi=document.createElement('img');pi.src=uri(PAY[x.i]);pi.alt='';pi.width=48;pi.height=48;pi.style.cssText='display:block;margin:0 0 10px';d.appendChild(pi)}
   h.textContent=x.t;q.textContent=x.d;
   if(x.te)h.setAttribute('data-en',x.te);
+  if(x.ts)h.setAttribute('data-sw',x.ts);
   if(x.de)q.setAttribute('data-en',x.de);
+  if(x.ds)q.setAttribute('data-sw',x.ds);
   d.appendChild(h);d.appendChild(q);dm.appendChild(d);
  });
  var fb=document.getElementById('donfallback');if(fb)fb.hidden=true;
@@ -149,16 +151,16 @@ if(dm&&DONS.length){
 
 /* ===== PAGE DON : bouton e-mail ===== */
 var dmb=document.getElementById('donmailbtn');
-if(dmb&&EMAIL)dmb.href='mailto:'+EMAIL+'?subject='+encodeURIComponent(EN?'Donation – Rumonge Halisi Association':'Don – Association de Rumonge Halisi');
+if(dmb&&EMAIL)dmb.href='mailto:'+EMAIL+'?subject='+encodeURIComponent(SW?'Mchango – Chama cha Rumonge Halisi':EN?'Donation – Rumonge Halisi Association':'Don – Association de Rumonge Halisi');
 
 /* ===== LANGUE FR / EN ===== */
-var en=EN;
+var en=EN||SW;
 var els=document.querySelectorAll('[data-en]'),b=document.getElementById('lang'),nav=document.getElementById('nav');
 els.forEach(function(e){e.setAttribute('data-fr',e.textContent)});
 function ap(){
- els.forEach(function(e){e.textContent=e.getAttribute(en?'data-en':'data-fr')});
- if(addr)addr.innerHTML=en?ADDR_EN:addrFR;
- document.documentElement.lang=en?'en':'fr';
+ els.forEach(function(e){e.textContent=e.getAttribute(SW&&e.hasAttribute('data-sw')?'data-sw':EN||SW?'data-en':'data-fr')});
+ if(addr)addr.innerHTML=SW?ADDR_SW:en?ADDR_EN:addrFR;
+ document.documentElement.lang=LG;
  }
 if(en)ap();
 
@@ -180,7 +182,7 @@ if(mn&&nav){
 if(document.getElementById('send')||/contact/.test(location.pathname)){
  var tgt=null;
  document.querySelectorAll('p,div,li').forEach(function(e){
-  if(!tgt&&e.children.length===0&&/^\s*(Siège social|Registered office|Head office)/.test(e.textContent))tgt=e;
+  if(!tgt&&e.children.length===0&&/^\s*(Siège social|Registered office|Head office|Makao makuu)/.test(e.textContent))tgt=e;
  });
  var box=document.createElement('div');box.className='contact-coords';
  var lines=[];
@@ -193,21 +195,21 @@ if(document.getElementById('send')||/contact/.test(location.pathname)){
 
 /* ===== FORMULAIRE DE CONTACT ===== */
 var s=document.getElementById('send'),stt=document.getElementById('st');
-function say(fr,eng,bad){if(stt){stt.textContent=en?eng:fr;stt.className=bad?'ko':'ok'}}
-function ferr(id,fr,eng){
+function say(fr,eng,bad,sw){if(stt){stt.textContent=SW&&sw?sw:(EN?eng:fr);stt.className=bad?'ko':'ok'}}
+function ferr(id,fr,eng,sw){
  var i=document.getElementById(id),e=document.getElementById(id+'-e');
- if(e)e.textContent=fr?(en?eng:fr):'';
+ if(e)e.textContent=fr?(SW&&sw?sw:(EN?eng:fr)):'';
  if(i){if(fr)i.setAttribute('aria-invalid','true');else i.removeAttribute('aria-invalid')}
 }
 function val(id){var e=document.getElementById(id);return e?e.value.trim():''}
 if(s)s.onclick=function(){
  if(val('hp'))return; /* anti-spam : champ piège rempli = robot */
  var nm=val('nm'),em=val('em'),ph=val('ph'),sj=val('sj'),ms=val('ms'),cs=document.getElementById('cs'),ok=true;
- if(!nm){ferr('nm','Indiquez votre nom.','Please enter your name.');ok=false}else ferr('nm');
- if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){ferr('em','Indiquez un email valide.','Please enter a valid email.');ok=false}else ferr('em');
- if(!ms){ferr('ms','Écrivez votre message.','Please write your message.');ok=false}else ferr('ms');
- if(cs&&!cs.checked){ferr('cs','Veuillez accepter pour continuer.','Please tick the box to continue.');ok=false}else ferr('cs');
- if(!ok){say('Vérifiez les champs signalés.','Please check the highlighted fields.',1);return}
+ if(!nm){ferr('nm','Indiquez votre nom.','Please enter your name.','Tafadhali andika jina lako.');ok=false}else ferr('nm');
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){ferr('em','Indiquez un email valide.','Please enter a valid email.','Tafadhali andika barua pepe halali.');ok=false}else ferr('em');
+ if(!ms){ferr('ms','Écrivez votre message.','Please write your message.','Tafadhali andika ujumbe wako.');ok=false}else ferr('ms');
+ if(cs&&!cs.checked){ferr('cs','Veuillez accepter pour continuer.','Please tick the box to continue.','Tafadhali kubali ili uendelee.');ok=false}else ferr('cs');
+ if(!ok){say('Vérifiez les champs signalés.','Please check the highlighted fields.',1,'Tafadhali angalia sehemu zilizoonyeshwa.');return}
  if(stt){stt.textContent='';stt.className=''}
  if(FORMSPREE){
   s.disabled=true;
@@ -220,17 +222,17 @@ if(s)s.onclick=function(){
      var m=(d&&d.errors&&d.errors.map(function(x){return x.message}).join(' '))||(d&&d.error)||('HTTP '+r.status);
      throw new Error(m);
     }
-    say('Merci, votre message est envoyé. Nous vous répondrons bientôt.','Thank you, your message has been sent. We will reply soon.');
+    say('Merci, votre message est envoyé. Nous vous répondrons bientôt.','Thank you, your message has been sent. We will reply soon.',0,'Asante, ujumbe wako umetumwa. Tutakujibu hivi karibuni.');
     document.getElementById('ms').value='';if(cs)cs.checked=false;
    });
   })
-  .catch(function(er){say('Envoi impossible ('+((er&&er.message)||er)+'). Réessayez ou écrivez-nous directement par email.','Could not send ('+((er&&er.message)||er)+'). Try again or email us directly.',1)})
+  .catch(function(er){say('Envoi impossible ('+((er&&er.message)||er)+'). Réessayez ou écrivez-nous directement par email.','Could not send ('+((er&&er.message)||er)+'). Try again or email us directly.',1,'Imeshindikana kutuma ('+((er&&er.message)||er)+'). Jaribu tena au tuandikie moja kwa moja kwa barua pepe.')})
   .then(function(){s.disabled=false});
   return;
  }
  var body=ms+'\n\n'+nm+' <'+em+'>'+(ph?'\n'+ph:'');
  if(EMAIL){location.href='mailto:'+EMAIL+'?subject='+encodeURIComponent(sj+' – '+nm)+'&body='+encodeURIComponent(body);return}
  if(WHATSAPP){window.open('https://wa.me/'+WHATSAPP+'?text='+encodeURIComponent(sj+' : '+body),'_blank','noopener');return}
- say('Le formulaire n’est pas encore configuré.','The form is not configured yet.',1);
+ say('Le formulaire n’est pas encore configuré.','The form is not configured yet.',1,'Fomu bado haijawekwa tayari.');
 };
 })();

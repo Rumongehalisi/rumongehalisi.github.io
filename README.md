@@ -1,6 +1,8 @@
 # Site de l'Association de Rumonge Halisi
 
 - Pages françaises : `index.html`, `about.html`, …
-- Pages anglaises : `en-index.html`, `en-about.html`, … (générées automatiquement).
-- Après toute modification d'une page française : `python3 tools/build_en.py`
-  (nécessite `pip install beautifulsoup4`), puis publier aussi les fichiers `en-*.html` et `sitemap.xml`.
+- Pages anglaises : `en-index.html`, `en-about.html`, …
+- Pages swahili : `sw-index.html`, `sw-about.html`, …
+- Les pages EN et SW sont générées automatiquement. Après toute modification d'une page française :
+  `python3 tools/build_langs.py` (nécessite `pip install beautifulsoup4`), puis publier les fichiers `en-*.html`, `sw-*.html` et `sitemap.xml`.
+- Les traductions swahili sont dans `tools/sw_strings.py` (à faire relire par un locuteur natif).
