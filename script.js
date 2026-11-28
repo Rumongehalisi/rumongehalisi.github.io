@@ -101,7 +101,7 @@ document.querySelectorAll('#nav a[href$="urai.html"],footer a[href$="urai.html"]
 document.querySelectorAll('.top .coords').forEach(function(e){e.parentNode.removeChild(e)});
 
 /* ===== PIED DE PAGE ===== */
-var addr=null,addrFR='',ADDR_EN='RUMONGE HALISI ASSOCIATION – non-profit association<br>Centre Urbain Hill, Zone, Commune and Province of Rumonge, Burundi',ADDR_SW='CHAMA CHA RUMONGE HALISI – chama kisichotafuta faida<br>Kilima cha Centre Urbain, Zone, Commune na Mkoa wa Rumonge, Burundi';
+var addr=null,addrFR='',ADDR_EN='RUMONGE HALISI ASSOCIATION – non-profit association<br>Centre Urbain Hill, Zone, Commune and Province of Rumonge, Burundi',ADDR_SW='SHIRIKA LA RUMONGE HALISI – shirika lisilotafuta faida<br>Kilima cha Centre Urbain, Zone, Komini na Mkoa wa Rumonge, Burundi';
 var ft=document.querySelector('footer');
 if(ft){
  var fg=ft.querySelector('.fg');
@@ -151,7 +151,7 @@ if(dm&&DONS.length){
 
 /* ===== PAGE DON : bouton e-mail ===== */
 var dmb=document.getElementById('donmailbtn');
-if(dmb&&EMAIL)dmb.href='mailto:'+EMAIL+'?subject='+encodeURIComponent(SW?'Mchango – Chama cha Rumonge Halisi':EN?'Donation – Rumonge Halisi Association':'Don – Association de Rumonge Halisi');
+if(dmb&&EMAIL)dmb.href='mailto:'+EMAIL+'?subject='+encodeURIComponent(SW?'Mchango – Shirika la Rumonge Halisi':EN?'Donation – Rumonge Halisi Association':'Don – Association de Rumonge Halisi');
 
 /* ===== LANGUE FR / EN ===== */
 var en=EN||SW;
